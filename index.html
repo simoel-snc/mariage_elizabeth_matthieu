@@ -45,20 +45,8 @@
     <!-- Form -->
     <form id="rsvpForm" class="form-section" onsubmit="return false;" autocomplete="off">
 
-      <!-- Invitation Code — auto-filled from URL ?code=XXXX, manual fallback if missing -->
-      <div class="invite-code-card" id="inviteCodeCard" style="display:none;">
-        <div class="field-group" style="margin-bottom:0;">
-          <label class="field-label" for="inviteCode" data-fr="Code d'invitation" data-nl="Uitnodigingscode">Code
-            d'invitation</label>
-          <input type="text" class="text-input" id="inviteCode"
-            data-ph-fr="Entrez le code figurant sur votre invitation" data-ph-nl="Code op uw uitnodiging"
-            placeholder="Entrez le code figurant sur votre invitation" autocomplete="off">
-          <p class="code-hint" data-fr="Ce code se trouve sur votre carton d'invitation."
-            data-nl="Deze code staat op uw uitnodigingskaart.">
-            Ce code se trouve sur votre carton d'invitation.
-          </p>
-        </div>
-      </div>
+      <!-- Invitation code (auto-filled from URL ?code=XXXX) -->
+      <input type="hidden" id="inviteCode">
 
       <!-- Honeypot — invisible to humans, bots will fill it -->
       <div style="position:absolute;left:-9999px;top:-9999px;" aria-hidden="true">
@@ -79,6 +67,15 @@
 
       <div class="status-message" id="statusMessage"></div>
     </form>
+
+    <!-- No Code Screen -->
+    <div class="thank-you" id="noCodeMessage">
+      <div class="heart-icon">✦</div>
+      <p data-fr="Veuillez scanner le QR code figurant sur votre invitation pour accéder au formulaire."
+        data-nl="Gelieve de QR-code op uw uitnodiging te scannen om het formulier te openen.">
+        Veuillez scanner le QR code figurant sur votre invitation pour accéder au formulaire.
+      </p>
+    </div>
 
     <!-- Thank You Screen -->
     <div class="thank-you" id="thankYou">

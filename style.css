@@ -377,71 +377,6 @@ body::before {
   border-color: var(--sage-light);
 }
 
-/* Full day special style */
-.full-day-item {
-  grid-column: 1 / -1;
-}
-
-.full-day-item .checkbox-label {
-  justify-content: center;
-  border-style: dashed;
-  background: rgba(196, 163, 90, 0.04);
-  border-color: rgba(196, 163, 90, 0.3);
-  color: var(--gold);
-  font-weight: 400;
-}
-
-.full-day-item input:checked+.checkbox-label {
-  border-style: solid;
-  border-color: var(--gold);
-  background: rgba(196, 163, 90, 0.08);
-  color: var(--gold);
-}
-
-.full-day-item input:checked+.checkbox-label .check-box {
-  background: var(--gold);
-  border-color: var(--gold);
-}
-
-/* === MENU RADIO === */
-.menu-options {
-  display: flex;
-  gap: 0.75rem;
-}
-
-.menu-option {
-  flex: 1;
-  position: relative;
-}
-
-.menu-option input {
-  display: none;
-}
-
-.menu-label {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1rem;
-  border: 1.5px solid rgba(138, 154, 123, 0.2);
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 0.88rem;
-  color: var(--warm-gray);
-  text-align: center;
-}
-
-.menu-option input:checked+.menu-label {
-  border-color: var(--sage);
-  background: rgba(138, 154, 123, 0.06);
-  color: var(--sage-dark);
-}
-
-.menu-label:hover {
-  border-color: var(--sage-light);
-}
 
 /* === ADD GUEST BUTTON === */
 .add-guest-btn {
@@ -536,32 +471,6 @@ body::before {
   border: 1px solid rgba(194, 99, 90, 0.2);
 }
 
-/* === INVITE CODE CARD === */
-.invite-code-card {
-  background: var(--white);
-  border: 1px solid rgba(196, 163, 90, 0.3);
-  border-radius: 12px;
-  padding: 2rem;
-  margin-bottom: 1.5rem;
-  position: relative;
-  animation: fadeUp 0.5s ease-out both;
-}
-
-.invite-code-card .text-input {
-  letter-spacing: 0.15em;
-  text-align: center;
-  font-weight: 400;
-  font-size: 1.1rem;
-}
-
-.code-hint {
-  font-size: 0.78rem;
-  color: var(--warm-gray);
-  text-align: center;
-  margin-top: 0.6rem;
-  opacity: 0.7;
-  font-style: italic;
-}
 
 /* === THANK YOU SCREEN === */
 .thank-you {
@@ -672,9 +581,6 @@ body::before {
     grid-template-columns: 1fr;
   }
 
-  .menu-options {
-    flex-direction: column;
-  }
 
   .presence-toggle {
     flex-direction: column;

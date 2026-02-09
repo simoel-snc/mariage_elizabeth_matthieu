@@ -1,7 +1,7 @@
 // ============================================================
 // CONFIGURATION — Replace this URL with your Google Apps Script
 // ============================================================
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx5PyteX_nPEyxp2gGP-M5DdhjlPl53a-ZVuqnPAIg8C3fpJ_EUj2BxvylaHAWtbO5B/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzYmqNn8PU0vywrCUeoa8LCAXlBWv0Opl2x-g4g-5lXx-Xr-cyQ67jvR8T1dJ11Rkv6/exec';
 
 // ============================================================
 // TRANSLATIONS
@@ -14,17 +14,11 @@ const T = {
     presence: 'Présence',
     yes: 'Sera présent(e) ✓',
     no: 'Ne pourra pas venir ✗',
-    parts: 'Parties de la journée',
-    fullDay: '✦ Journée complète ✦',
-    messe: 'Messe',
+    confirm: 'Merci de confirmer votre présence à :',
     reception: 'Réception',
     diner: 'Dîner',
-    soiree: 'Soirée',
-    menu: 'Menu',
-    menuNormal: 'Menu classique',
-    menuVeg: 'Menu végétarien',
     allergies: 'Allergies ou régime alimentaire',
-    allergiesPlaceholder: 'Ex: sans gluten, allergie aux noix…',
+    allergiesPlaceholder: 'Ex: végétarien, sans gluten, allergie aux noix…',
     addGuest: 'Ajouter un invité',
     submit: 'Envoyer la réponse',
     sending: 'Envoi en cours…',
@@ -32,12 +26,8 @@ const T = {
     errorMsg: 'Une erreur est survenue. Veuillez réessayer.',
     errorName: 'Veuillez renseigner le nom de chaque invité.',
     errorPresence: 'Veuillez indiquer la présence pour chaque invité.',
-    errorParts: 'Veuillez sélectionner au moins une partie de la journée pour les invités présents.',
     errorCode: 'Le code d\'invitation est incorrect. Vérifiez le code sur votre carton d\'invitation.',
-    errorCodeEmpty: 'Veuillez entrer le code d\'invitation figurant sur votre carton.',
-    inviteCodeLabel: 'Code d\'invitation',
-    inviteCodePlaceholder: 'Entrez le code figurant sur votre invitation',
-    inviteCodeHint: 'Ce code se trouve sur votre carton d\'invitation.',
+    noCode: 'Veuillez scanner le QR code figurant sur votre invitation pour accéder au formulaire.',
     thankTitle: 'Merci !',
     thankSub: 'À bientôt ✦'
   },
@@ -48,17 +38,11 @@ const T = {
     presence: 'Aanwezigheid',
     yes: 'Zal aanwezig zijn ✓',
     no: 'Kan niet komen ✗',
-    parts: 'Delen van de dag',
-    fullDay: '✦ Volledige dag ✦',
-    messe: 'Mis',
+    confirm: 'Gelieve uw aanwezigheid te bevestigen bij:',
     reception: 'Receptie',
     diner: 'Diner',
-    soiree: 'Avondfeest',
-    menu: 'Menu',
-    menuNormal: 'Klassiek menu',
-    menuVeg: 'Vegetarisch menu',
     allergies: 'Allergieën of dieet',
-    allergiesPlaceholder: 'Bv: glutenvrij, notenallergie…',
+    allergiesPlaceholder: 'Bv: vegetarisch, glutenvrij, notenallergie…',
     addGuest: 'Gast toevoegen',
     submit: 'Antwoord versturen',
     sending: 'Bezig met verzenden…',
@@ -66,12 +50,8 @@ const T = {
     errorMsg: 'Er is een fout opgetreden. Probeer het opnieuw.',
     errorName: 'Gelieve de naam van elke gast in te vullen.',
     errorPresence: 'Gelieve de aanwezigheid voor elke gast aan te geven.',
-    errorParts: 'Gelieve minstens één deel van de dag te selecteren voor de aanwezige gasten.',
     errorCode: 'De uitnodigingscode is onjuist. Controleer de code op uw uitnodigingskaart.',
-    errorCodeEmpty: 'Gelieve de uitnodigingscode op uw kaart in te voeren.',
-    inviteCodeLabel: 'Uitnodigingscode',
-    inviteCodePlaceholder: 'Code op uw uitnodiging',
-    inviteCodeHint: 'Deze code staat op uw uitnodigingskaart.',
+    noCode: 'Gelieve de QR-code op uw uitnodiging te scannen om het formulier te openen.',
     thankTitle: 'Bedankt!',
     thankSub: 'Tot binnenkort ✦'
   }
@@ -115,15 +95,9 @@ function updateGuestLabels() {
     card.querySelector('.field-label-presence').textContent = t('presence');
     card.querySelector('.label-yes').textContent = t('yes');
     card.querySelector('.label-no').textContent = t('no');
-    card.querySelector('.field-label-parts').textContent = t('parts');
-    card.querySelector('.label-fullday').textContent = t('fullDay');
-    card.querySelector('.label-messe').textContent = t('messe');
-    card.querySelector('.label-reception').textContent = t('reception');
-    card.querySelector('.label-diner').textContent = t('diner');
-    card.querySelector('.label-soiree').textContent = t('soiree');
-    card.querySelector('.field-label-menu').textContent = t('menu');
-    card.querySelector('.label-menu-normal').textContent = t('menuNormal');
-    card.querySelector('.label-menu-veg').textContent = t('menuVeg');
+    card.querySelector('.field-label-confirm').textContent = t('confirm');
+    card.querySelector('.label-reception .checkbox-text').textContent = t('reception');
+    card.querySelector('.label-diner .checkbox-text').textContent = t('diner');
     card.querySelector('.field-label-allergies').textContent = t('allergies');
     card.querySelector('.allergies-input').placeholder = t('allergiesPlaceholder');
   });
@@ -181,59 +155,23 @@ function addGuest() {
   <!-- Conditional fields (shown when present) -->
   <div class="conditional-fields" id="conditional-${id}">
 
-    <!-- Parts of the day -->
+    <!-- Confirm reception & diner -->
     <div class="field-group">
-      <label class="field-label field-label-parts">${t('parts')}</label>
+      <label class="field-label field-label-confirm">${t('confirm')}</label>
       <div class="checkbox-grid">
-        <div class="checkbox-item full-day-item">
-          <input type="checkbox" id="fullday-${id}" onchange="toggleFullDay(${id})">
-          <label for="fullday-${id}" class="checkbox-label label-fullday">
-            <span class="check-box">${checkSvg}</span>
-            ${t('fullDay')}
-          </label>
-        </div>
         <div class="checkbox-item">
-          <input type="checkbox" id="messe-${id}" class="part-checkbox" data-guest="${id}" onchange="uncheckFullDay(${id})">
-          <label for="messe-${id}" class="checkbox-label label-messe">
-            <span class="check-box">${checkSvg}</span>
-            ${t('messe')}
-          </label>
-        </div>
-        <div class="checkbox-item">
-          <input type="checkbox" id="reception-${id}" class="part-checkbox" data-guest="${id}" onchange="uncheckFullDay(${id})">
+          <input type="checkbox" id="reception-${id}">
           <label for="reception-${id}" class="checkbox-label label-reception">
             <span class="check-box">${checkSvg}</span>
-            ${t('reception')}
+            <span class="checkbox-text">${t('reception')}</span>
           </label>
         </div>
         <div class="checkbox-item">
-          <input type="checkbox" id="diner-${id}" class="part-checkbox" data-guest="${id}" onchange="uncheckFullDay(${id})">
+          <input type="checkbox" id="diner-${id}">
           <label for="diner-${id}" class="checkbox-label label-diner">
             <span class="check-box">${checkSvg}</span>
-            ${t('diner')}
+            <span class="checkbox-text">${t('diner')}</span>
           </label>
-        </div>
-        <div class="checkbox-item">
-          <input type="checkbox" id="soiree-${id}" class="part-checkbox" data-guest="${id}" onchange="uncheckFullDay(${id})">
-          <label for="soiree-${id}" class="checkbox-label label-soiree">
-            <span class="check-box">${checkSvg}</span>
-            ${t('soiree')}
-          </label>
-        </div>
-      </div>
-    </div>
-
-    <!-- Menu -->
-    <div class="field-group">
-      <label class="field-label field-label-menu">${t('menu')}</label>
-      <div class="menu-options">
-        <div class="menu-option">
-          <input type="radio" name="menu-${id}" id="menu-normal-${id}" value="normal" checked>
-          <label for="menu-normal-${id}" class="menu-label label-menu-normal">🍽 ${t('menuNormal')}</label>
-        </div>
-        <div class="menu-option">
-          <input type="radio" name="menu-${id}" id="menu-veg-${id}" value="vegetarian">
-          <label for="menu-veg-${id}" class="menu-label label-menu-veg">🌱 ${t('menuVeg')}</label>
         </div>
       </div>
     </div>
@@ -283,19 +221,6 @@ function toggleConditional(id) {
   }
 }
 
-function toggleFullDay(id) {
-  const fullDay = document.getElementById(`fullday-${id}`);
-  const parts = ['messe', 'reception', 'diner', 'soiree'];
-  parts.forEach(part => {
-    document.getElementById(`${part}-${id}`).checked = fullDay.checked;
-  });
-}
-
-function uncheckFullDay(id) {
-  const parts = ['messe', 'reception', 'diner', 'soiree'];
-  const allChecked = parts.every(part => document.getElementById(`${part}-${id}`).checked);
-  document.getElementById(`fullday-${id}`).checked = allChecked;
-}
 
 // ============================================================
 // FORM SUBMISSION
@@ -314,15 +239,7 @@ async function submitForm() {
     return;
   }
 
-  // Validate invite code
   const inviteCode = document.getElementById('inviteCode').value.trim();
-  if (!inviteCode) {
-    statusEl.className = 'status-message error';
-    statusEl.textContent = t('errorCodeEmpty');
-    statusEl.style.display = 'block';
-    document.getElementById('inviteCode').focus();
-    return;
-  }
 
   // Collect data
   const cards = document.querySelectorAll('.guest-card');
@@ -344,29 +261,21 @@ async function submitForm() {
 
     const present = yesEl.checked;
 
-    let parts = [];
-    let menu = 'normal';
+    let reception = false;
+    let diner = false;
     let allergies = '';
 
     if (present) {
-      ['messe', 'reception', 'diner', 'soiree'].forEach(part => {
-        if (document.getElementById(`${part}-${cardId}`).checked) parts.push(part);
-      });
-
-      if (parts.length === 0) {
-        valid = false; errorMsg = t('errorParts'); return;
-      }
-
-      const menuEl = document.querySelector(`input[name="menu-${cardId}"]:checked`);
-      menu = menuEl ? menuEl.value : 'normal';
+      reception = document.getElementById(`reception-${cardId}`).checked;
+      diner = document.getElementById(`diner-${cardId}`).checked;
       allergies = card.querySelector('.allergies-input').value.trim();
     }
 
     guests.push({
       name,
       present,
-      parts: parts.join(', '),
-      menu,
+      reception,
+      diner,
       allergies,
       language: currentLang,
       submittedAt: new Date().toISOString()
@@ -399,7 +308,6 @@ async function submitForm() {
       statusEl.style.display = 'block';
       btn.disabled = false;
       btn.querySelector('span').textContent = t('submit');
-      document.getElementById('inviteCode').focus();
       return;
     }
 
@@ -430,13 +338,26 @@ async function submitForm() {
 const urlParams = new URLSearchParams(globalThis.location.search);
 const urlCode = (urlParams.get('code') || '').trim();
 
-if (urlCode) {
-  // Code found in URL — pre-fill hidden and keep card hidden
-  document.getElementById('inviteCode').value = urlCode;
-  document.getElementById('inviteCodeCard').style.display = 'none';
-} else {
-  // No code in URL — show manual entry fallback
-  document.getElementById('inviteCodeCard').style.display = '';
-}
+// Hide everything until code is verified
+document.querySelector('.form-section').style.display = 'none';
+document.querySelector('.intro').style.display = 'none';
 
-addGuest(); // Start with one guest card
+if (urlCode) {
+  // Verify invite code with the backend before showing the form
+  try {
+    const res = await fetch(`${APPS_SCRIPT_URL}?code=${encodeURIComponent(urlCode)}`);
+    const result = await res.json();
+    if (result.status === 'valid') {
+      document.getElementById('inviteCode').value = urlCode;
+      document.querySelector('.form-section').style.display = '';
+      document.querySelector('.intro').style.display = '';
+      addGuest();
+    } else {
+      document.getElementById('noCodeMessage').classList.add('visible');
+    }
+  } catch {
+    document.getElementById('noCodeMessage').classList.add('visible');
+  }
+} else {
+  document.getElementById('noCodeMessage').classList.add('visible');
+}
