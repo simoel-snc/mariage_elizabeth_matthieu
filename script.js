@@ -342,22 +342,24 @@ const urlCode = (urlParams.get('code') || '').trim();
 document.querySelector('.form-section').style.display = 'none';
 document.querySelector('.intro').style.display = 'none';
 
-if (urlCode) {
-  // Verify invite code with the backend before showing the form
-  try {
-    const res = await fetch(`${APPS_SCRIPT_URL}?code=${encodeURIComponent(urlCode)}`);
-    const result = await res.json();
-    if (result.status === 'valid') {
-      document.getElementById('inviteCode').value = urlCode;
-      document.querySelector('.form-section').style.display = '';
-      document.querySelector('.intro').style.display = '';
-      addGuest();
-    } else {
+(async () => {
+  if (urlCode) {
+    // Verify invite code with the backend before showing the form
+    try {
+      const res = await fetch(`${APPS_SCRIPT_URL}?code=${encodeURIComponent(urlCode)}`);
+      const result = await res.json();
+      if (result.status === 'valid') {
+        document.getElementById('inviteCode').value = urlCode;
+        document.querySelector('.form-section').style.display = '';
+        document.querySelector('.intro').style.display = '';
+        addGuest();
+      } else {
+        document.getElementById('noCodeMessage').classList.add('visible');
+      }
+    } catch {
       document.getElementById('noCodeMessage').classList.add('visible');
     }
-  } catch {
+  } else {
     document.getElementById('noCodeMessage').classList.add('visible');
   }
-} else {
-  document.getElementById('noCodeMessage').classList.add('visible');
-}
+})();
