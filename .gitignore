@@ -1,0 +1,5 @@
+# Google Apps Script — contains the secret invite code
+google-apps-script.js
+
+# Setup instructions (not needed in deployment)
+SETUP.md
