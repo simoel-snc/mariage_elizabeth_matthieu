@@ -4,95 +4,207 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RSVP — Votre Mariage</title>
+  <title>Elizabeth & Matthieu</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
     href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
 
-  <!-- Language Toggle -->
-  <div class="lang-toggle">
-    <button class="lang-btn active" onclick="setLang('fr')">FR</button>
-    <button class="lang-btn" onclick="setLang('nl')">NL</button>
-  </div>
-
-  <!-- Header -->
-  <header class="header">
-    <div class="ornament">✦ ✦ ✦</div>
-    <h1 data-fr="Nous nous marions" data-nl="Wij gaan trouwen">Nous nous marions</h1>
-    <p class="subtitle" data-fr="Merci de confirmer votre présence" data-nl="Gelieve uw aanwezigheid te bevestigen">
-      Merci de confirmer votre présence</p>
-    <div class="divider"></div>
-  </header>
+  <script>globalThis.PAGE_CONFIG = {
+    nav: true,
+    pages: {
+      infos: { fr: 'Infos Pratiques', nl: 'Praktische Info' },
+      rsvp:  { fr: 'Nous nous marions', nl: 'Wij gaan trouwen' }
+    }
+  };</script>
 
   <!-- Main Content -->
-  <div class="container">
+  <div class="container" style="display:none">
 
-    <!-- Intro -->
-    <div class="intro">
-      <p data-fr="Nous serions ravis de vous compter parmi nous pour célébrer notre union. Veuillez remplir le formulaire ci-dessous pour chaque invité."
-        data-nl="Wij zouden het geweldig vinden om u erbij te hebben om ons huwelijk te vieren. Gelieve onderstaand formulier in te vullen voor elke gast.">
-        Nous serions ravis de vous compter parmi nous pour célébrer notre union. Veuillez remplir le formulaire
-        ci-dessous pour chaque invité.
-      </p>
+    <!-- ==================== INFOS PAGE ==================== -->
+    <div class="page" id="page-infos">
+
+      <!-- PROGRAMME -->
+      <section class="info-section">
+        <h2 class="info-section-title" data-fr="Programme" data-nl="Programma">Programme</h2>
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-time">15:00</div>
+            <div class="timeline-content">
+              <h3 data-fr="Cérémonie religieuse" data-nl="Kerkelijke ceremonie">Cérémonie religieuse</h3>
+              <p data-fr="Eglise Saint-Étienne" data-nl="Sint-Stefanuskerk">Eglise Saint-Étienne</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-time">17:00</div>
+            <div class="timeline-content">
+              <h3 data-fr="Réception" data-nl="Receptie">Réception</h3>
+              <p>Le Chenoy</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-time">19:30</div>
+            <div class="timeline-content">
+              <h3 data-fr="Repas" data-nl="Maaltijd">Repas</h3>
+              <p>Le Chenoy</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-content">
+              <h3 data-fr="Soirée" data-nl="Avondfeest">Soirée</h3>
+              <p>Le Chenoy</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="divider"></div>
+
+      <!-- CHURCH -->
+      <section class="info-section">
+        <h2 class="info-section-title" data-fr="Cérémonie" data-nl="Ceremonie">Cérémonie</h2>
+        <div class="info-card">
+          <h3 data-fr="Eglise Saint-Étienne de Court-Saint-Étienne"
+              data-nl="Sint-Stefanuskerk van Court-Saint-Étienne">
+            Eglise Saint-Étienne de Court-Saint-Étienne</h3>
+          <p class="info-address">Rue du Village 1, 1490 Court-Saint-Étienne</p>
+          <div class="info-map">
+            <iframe
+              src="https://maps.google.com/maps?q=Eglise+Saint-Etienne+Rue+du+Village+1+Court-Saint-Etienne&z=15&output=embed"
+              title="Eglise Saint-Étienne de Court-Saint-Étienne"
+              allowfullscreen="" loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+          </div>
+          <a href="https://www.google.com/maps/place//data=!4m2!3m1!1s0x47c3d58f5ba09869:0xe15385fa60ff5af3"
+             class="info-link" target="_blank" rel="noopener"
+             data-fr="Ouvrir dans Google Maps" data-nl="Openen in Google Maps">
+            Ouvrir dans Google Maps
+          </a>
+        </div>
+      </section>
+
+      <div class="divider"></div>
+
+      <!-- VENUE -->
+      <section class="info-section">
+        <h2 class="info-section-title" data-fr="Réception & Soirée" data-nl="Receptie & Avondfeest">Réception & Soirée</h2>
+        <div class="info-card">
+          <h3>Le Chenoy</h3>
+          <p class="info-address"
+             data-fr="Rue Vital Casse, Court-Saint-Étienne"
+             data-nl="Rue Vital Casse, Court-Saint-Étienne">
+            Rue Vital Casse, Court-Saint-Étienne</p>
+          <p class="info-note"
+             data-fr="Accès par la Rue Vital Casse"
+             data-nl="Toegang via Rue Vital Casse">
+            Accès par la Rue Vital Casse</p>
+          <div class="info-map">
+            <iframe
+              src="https://maps.google.com/maps?q=50.61792754631235,4.587336352317392&z=15&output=embed"
+              title="Le Chenoy"
+              allowfullscreen="" loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+          </div>
+          <div class="info-links">
+            <a href="https://www.google.com/maps/search/?api=1&query=50.61792754631235,4.587336352317392"
+               class="info-link" target="_blank" rel="noopener"
+               data-fr="Ouvrir dans Google Maps" data-nl="Openen in Google Maps">
+              Ouvrir dans Google Maps
+            </a>
+            <a href="https://maps.app.goo.gl/ECs5X9sP1yKgXYN18"
+               class="info-link" target="_blank" rel="noopener"
+               data-fr="Voir le parking" data-nl="Parkeerplaats bekijken">
+              Voir le parking
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <div class="divider"></div>
+
+      <!-- DRESS CODE -->
+      <section class="info-section">
+        <h2 class="info-section-title" data-fr="Dress Code" data-nl="Kledingcode">Dress Code</h2>
+        <div class="info-card dress-code-card">
+          <p data-fr="Nous voulons que vous vous sentiez à l'aise. Faites un effort pour être à votre avantage, mais pas besoin de louer ou d'acheter une tenue spéciale. L'essentiel est que vous soyez vous-mêmes !"
+             data-nl="We willen dat u zich op uw gemak voelt. Doe uw best om er op uw best uit te zien, maar het is niet nodig om speciale kleding te huren of te kopen. Het belangrijkste is dat u uzelf bent!">
+            Nous voulons que vous vous sentiez à l'aise. Faites un effort pour être à votre avantage, mais pas besoin de louer ou d'acheter une tenue spéciale. L'essentiel est que vous soyez vous-mêmes !
+          </p>
+        </div>
+      </section>
+
     </div>
 
-    <!-- Form -->
-    <form id="rsvpForm" class="form-section" onsubmit="return false;" autocomplete="off">
+    <!-- ==================== RSVP PAGE ==================== -->
+    <div class="page" id="page-rsvp">
 
-      <!-- Invitation code (auto-filled from URL ?code=XXXX) -->
-      <input type="hidden" id="inviteCode">
-
-      <!-- Honeypot — invisible to humans, bots will fill it -->
-      <div style="position:absolute;left:-9999px;top:-9999px;" aria-hidden="true">
-        <label for="website">Website</label>
-        <input type="text" id="honeypot" name="website" tabindex="-1" autocomplete="off">
+      <!-- Intro -->
+      <div class="intro">
+        <p data-fr="Nous serions ravis de vous compter parmi nous pour célébrer notre union. Veuillez remplir le formulaire ci-dessous pour chaque invité."
+          data-nl="Wij zouden het geweldig vinden om u erbij te hebben om ons huwelijk te vieren. Gelieve onderstaand formulier in te vullen voor elke gast.">
+          Nous serions ravis de vous compter parmi nous pour célébrer notre union. Veuillez remplir le formulaire
+          ci-dessous pour chaque invité.
+        </p>
       </div>
 
-      <div id="guestsContainer"></div>
+      <!-- Form -->
+      <form id="rsvpForm" class="form-section" onsubmit="return false;" autocomplete="off">
 
-      <button type="button" class="add-guest-btn" onclick="addGuest()">
-        <span class="plus">+</span>
-        <span data-fr="Ajouter un invité" data-nl="Gast toevoegen">Ajouter un invité</span>
-      </button>
+        <!-- Invitation code (auto-filled from localStorage) -->
+        <input type="hidden" id="inviteCode">
 
-      <button type="button" class="submit-btn" id="submitBtn" onclick="submitForm()">
-        <span data-fr="Envoyer la réponse" data-nl="Antwoord versturen">Envoyer la réponse</span>
-      </button>
+        <!-- Honeypot — invisible to humans, bots will fill it -->
+        <div style="position:absolute;left:-9999px;top:-9999px;" aria-hidden="true">
+          <label for="website">Website</label>
+          <input type="text" id="honeypot" name="website" tabindex="-1" autocomplete="off">
+        </div>
 
-      <div class="status-message" id="statusMessage"></div>
-    </form>
+        <div id="guestsContainer"></div>
 
-    <!-- No Code Screen -->
-    <div class="thank-you" id="noCodeMessage">
-      <div class="heart-icon">✦</div>
-      <p data-fr="Veuillez scanner le QR code figurant sur votre invitation pour accéder au formulaire."
-        data-nl="Gelieve de QR-code op uw uitnodiging te scannen om het formulier te openen.">
-        Veuillez scanner le QR code figurant sur votre invitation pour accéder au formulaire.
-      </p>
+        <button type="button" class="add-guest-btn" onclick="addGuest()">
+          <span class="plus">+</span>
+          <span data-fr="Ajouter un invité" data-nl="Gast toevoegen">Ajouter un invité</span>
+        </button>
+
+        <button type="button" class="submit-btn" id="submitBtn" onclick="submitForm()">
+          <span data-fr="Envoyer la réponse" data-nl="Antwoord versturen">Envoyer la réponse</span>
+        </button>
+
+        <div class="status-message" id="statusMessage"></div>
+      </form>
+
+      <!-- Thank You Screen -->
+      <div class="thank-you" id="thankYou">
+        <div class="heart-icon">♥</div>
+        <h2 data-fr="Merci !" data-nl="Bedankt!">Merci !</h2>
+        <p data-fr="Votre réponse a bien été enregistrée. Nous avons hâte de partager ce moment avec vous !"
+          data-nl="Uw antwoord is geregistreerd. We kijken ernaar uit om dit moment met u te delen!">
+          Votre réponse a bien été enregistrée. Nous avons hâte de partager ce moment avec vous !
+        </p>
+        <div class="divider"></div>
+        <a href="#infos" class="info-page-btn" onclick="navigateTo('infos');return false;"
+           data-fr="Voir les infos pratiques" data-nl="Praktische info bekijken">
+          Voir les infos pratiques
+        </a>
+        <p data-fr="À bientôt ✦" data-nl="Tot binnenkort ✦" style="margin-top:1.5rem; font-style:italic;">À bientôt ✦</p>
+      </div>
+
     </div>
 
-    <!-- Thank You Screen -->
-    <div class="thank-you" id="thankYou">
-      <div class="heart-icon">♥</div>
-      <h2 data-fr="Merci !" data-nl="Bedankt!">Merci !</h2>
-      <p data-fr="Votre réponse a bien été enregistrée. Nous avons hâte de partager ce moment avec vous !"
-        data-nl="Uw antwoord is geregistreerd. We kijken ernaar uit om dit moment met u te delen!">
-        Votre réponse a bien été enregistrée. Nous avons hâte de partager ce moment avec vous !
-      </p>
-      <div class="divider"></div>
-      <p data-fr="À bientôt ✦" data-nl="Tot binnenkort ✦" style="margin-top:1rem; font-style:italic;">À bientôt ✦</p>
-    </div>
   </div>
 
-  <footer class="footer">✦</footer>
+  <footer class="footer" style="display:none">✦</footer>
 
-  <script src="script.js"></script>
+  <script src="js/header.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/rsvp.js"></script>
 
 </body>
 

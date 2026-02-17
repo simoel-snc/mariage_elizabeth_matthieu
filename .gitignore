@@ -3,3 +3,6 @@ google-apps-script.js
 
 # Setup instructions (not needed in deployment)
 SETUP.md
+
+# Claude Code config
+CLAUDE.md

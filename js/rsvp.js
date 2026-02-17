@@ -26,10 +26,7 @@ const T = {
     errorMsg: 'Une erreur est survenue. Veuillez réessayer.',
     errorName: 'Veuillez renseigner le nom de chaque invité.',
     errorPresence: 'Veuillez indiquer la présence pour chaque invité.',
-    errorCode: 'Le code d\'invitation est incorrect. Vérifiez le code sur votre carton d\'invitation.',
-    noCode: 'Veuillez scanner le QR code figurant sur votre invitation pour accéder au formulaire.',
-    thankTitle: 'Merci !',
-    thankSub: 'À bientôt ✦'
+    errorCode: 'Le code d\'invitation est incorrect. Vérifiez le code sur votre carton d\'invitation.'
   },
   nl: {
     guestN: 'Gast',
@@ -50,37 +47,12 @@ const T = {
     errorMsg: 'Er is een fout opgetreden. Probeer het opnieuw.',
     errorName: 'Gelieve de naam van elke gast in te vullen.',
     errorPresence: 'Gelieve de aanwezigheid voor elke gast aan te geven.',
-    errorCode: 'De uitnodigingscode is onjuist. Controleer de code op uw uitnodigingskaart.',
-    noCode: 'Gelieve de QR-code op uw uitnodiging te scannen om het formulier te openen.',
-    thankTitle: 'Bedankt!',
-    thankSub: 'Tot binnenkort ✦'
+    errorCode: 'De uitnodigingscode is onjuist. Controleer de code op uw uitnodigingskaart.'
   }
 };
 
-let currentLang = 'fr';
+// currentLang and setLang() provided by header.js
 let guestCount = 0;
-
-// ============================================================
-// LANGUAGE SWITCHING
-// ============================================================
-function setLang(lang) {
-  currentLang = lang;
-  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-  document.querySelector(`.lang-btn[onclick="setLang('${lang}')"]`).classList.add('active');
-
-  // Update all elements with data-fr / data-nl
-  document.querySelectorAll('[data-fr]').forEach(el => {
-    el.textContent = el.getAttribute(`data-${lang}`);
-  });
-
-  // Update placeholders
-  document.querySelectorAll('[data-ph-fr]').forEach(el => {
-    el.placeholder = el.getAttribute(`data-ph-${lang}`);
-  });
-
-  // Re-render guest cards labels
-  updateGuestLabels();
-}
 
 function t(key) {
   return T[currentLang][key] || key;
@@ -334,32 +306,7 @@ async function submitForm() {
 // INIT
 // ============================================================
 
-// Read invite code from URL parameter (?code=XXXX)
-const urlParams = new URLSearchParams(globalThis.location.search);
-const urlCode = (urlParams.get('code') || '').trim();
+// Initialize form (auth.js handles access check and page reveal)
+document.getElementById('inviteCode').value = localStorage.getItem('inviteCode') || '';
+addGuest();
 
-// Hide everything until code is verified
-document.querySelector('.form-section').style.display = 'none';
-document.querySelector('.intro').style.display = 'none';
-
-(async () => {
-  if (urlCode) {
-    // Verify invite code with the backend before showing the form
-    try {
-      const res = await fetch(`${APPS_SCRIPT_URL}?code=${encodeURIComponent(urlCode)}`);
-      const result = await res.json();
-      if (result.status === 'valid') {
-        document.getElementById('inviteCode').value = urlCode;
-        document.querySelector('.form-section').style.display = '';
-        document.querySelector('.intro').style.display = '';
-        addGuest();
-      } else {
-        document.getElementById('noCodeMessage').classList.add('visible');
-      }
-    } catch {
-      document.getElementById('noCodeMessage').classList.add('visible');
-    }
-  } else {
-    document.getElementById('noCodeMessage').classList.add('visible');
-  }
-})();
