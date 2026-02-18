@@ -16,12 +16,12 @@
 <body>
 
   <script>globalThis.PAGE_CONFIG = {
-    nav: true,
-    pages: {
-      infos: { fr: 'Infos Pratiques', nl: 'Praktische Info' },
-      rsvp:  { fr: 'Nous nous marions', nl: 'Wij gaan trouwen' }
-    }
-  };</script>
+      nav: true,
+      pages: {
+        infos: { fr: 'Infos Pratiques', nl: 'Praktische Info' },
+        rsvp: { fr: 'Nous nous marions', nl: 'Wij gaan trouwen' }
+      }
+    };</script>
 
   <!-- Main Content -->
   <div class="container" style="display:none">
@@ -50,7 +50,7 @@
           <div class="timeline-item">
             <div class="timeline-time">19:30</div>
             <div class="timeline-content">
-              <h3 data-fr="Repas" data-nl="Maaltijd">Repas</h3>
+              <h3 data-fr="Dîner" data-nl="Diner">Dîner</h3>
               <p>Le Chenoy</p>
             </div>
           </div>
@@ -69,22 +69,20 @@
       <section class="info-section">
         <h2 class="info-section-title" data-fr="Cérémonie" data-nl="Ceremonie">Cérémonie</h2>
         <div class="info-card">
-          <h3 data-fr="Eglise Saint-Étienne de Court-Saint-Étienne"
-              data-nl="Sint-Stefanuskerk van Court-Saint-Étienne">
+          <h3 data-fr="Eglise Saint-Étienne de Court-Saint-Étienne" data-nl="Sint-Stefanuskerk van Court-Saint-Étienne">
             Eglise Saint-Étienne de Court-Saint-Étienne</h3>
           <p class="info-address">Rue du Village 1, 1490 Court-Saint-Étienne</p>
           <div class="info-map">
             <iframe
               src="https://maps.google.com/maps?q=Eglise+Saint-Etienne+Rue+du+Village+1+Court-Saint-Etienne&z=15&output=embed"
-              title="Eglise Saint-Étienne de Court-Saint-Étienne"
-              allowfullscreen="" loading="lazy"
+              title="Eglise Saint-Étienne de Court-Saint-Étienne" allowfullscreen="" loading="lazy"
               referrerpolicy="no-referrer-when-downgrade">
             </iframe>
           </div>
           <a href="https://www.google.com/maps/place//data=!4m2!3m1!1s0x47c3d58f5ba09869:0xe15385fa60ff5af3"
-             class="info-link" target="_blank" rel="noopener"
-             data-fr="Ouvrir dans Google Maps" data-nl="Openen in Google Maps">
-            Ouvrir dans Google Maps
+            class="info-link" target="_blank" rel="noopener">
+            <span data-fr="Naviguer vers l'église" data-nl="Navigeer naar de kerk">Naviguer vers l'église</span>
+            <img class="qr" src="img/qr-church.png" alt="">
           </a>
         </div>
       </section>
@@ -93,37 +91,25 @@
 
       <!-- VENUE -->
       <section class="info-section">
-        <h2 class="info-section-title" data-fr="Réception & Soirée" data-nl="Receptie & Avondfeest">Réception & Soirée</h2>
+        <h2 class="info-section-title" data-fr="Réception & Dîner" data-nl="Receptie & Diner">Réception & Dîner
+        </h2>
         <div class="info-card">
           <h3>Le Chenoy</h3>
-          <p class="info-address"
-             data-fr="Rue Vital Casse, Court-Saint-Étienne"
-             data-nl="Rue Vital Casse, Court-Saint-Étienne">
-            Rue Vital Casse, Court-Saint-Étienne</p>
-          <p class="info-note"
-             data-fr="Accès par la Rue Vital Casse"
-             data-nl="Toegang via Rue Vital Casse">
+          <p class="info-address">Rue du Chenoy 1, 1490 Court-Saint-Étienne</p>
+          <p class="info-note" data-fr="Accès par la Rue Vital Casse" data-nl="Toegang via Rue Vital Casse">
             Accès par la Rue Vital Casse</p>
           <div class="info-map">
             <iframe
-              src="https://maps.google.com/maps?q=50.61792754631235,4.587336352317392&z=15&output=embed"
-              title="Le Chenoy"
-              allowfullscreen="" loading="lazy"
+              src="https://maps.google.com/maps?saddr=50.6427124359001,4.568979069426987&daddr=50.6195612296689,4.594149210339521+to:50.616845122845824,4.5867892292992&dirflg=d&output=embed"
+              title="Itinéraire église → Le Chenoy" allowfullscreen="" loading="lazy"
               referrerpolicy="no-referrer-when-downgrade">
             </iframe>
           </div>
-          <div class="info-links">
-            <a href="https://www.google.com/maps/search/?api=1&query=50.61792754631235,4.587336352317392"
-               class="info-link" target="_blank" rel="noopener"
-               data-fr="Ouvrir dans Google Maps" data-nl="Openen in Google Maps">
-              Ouvrir dans Google Maps
-            </a>
-            <a href="https://maps.app.goo.gl/ECs5X9sP1yKgXYN18"
-               class="info-link" target="_blank" rel="noopener"
-               data-fr="Voir le parking" data-nl="Parkeerplaats bekijken">
-              Voir le parking
-            </a>
-          </div>
+          <a href="https://www.google.com/maps/dir//50.6195612296689,4.594149210339521/50.616845122845824,4.5867892292992"
+            class="info-link" target="_blank" rel="noopener">
+            <span data-fr="Naviguer vers le parking" data-nl="Navigeer naar de parking">Naviguer vers le parking</span>
+            <img class="qr" src="img/qr-parking.png" alt="">
+          </a>
         </div>
       </section>
 
@@ -134,8 +120,9 @@
         <h2 class="info-section-title" data-fr="Dress Code" data-nl="Kledingcode">Dress Code</h2>
         <div class="info-card dress-code-card">
           <p data-fr="Nous voulons que vous vous sentiez à l'aise. Faites un effort pour être à votre avantage, mais pas besoin de louer ou d'acheter une tenue spéciale. L'essentiel est que vous soyez vous-mêmes !"
-             data-nl="We willen dat u zich op uw gemak voelt. Doe uw best om er op uw best uit te zien, maar het is niet nodig om speciale kleding te huren of te kopen. Het belangrijkste is dat u uzelf bent!">
-            Nous voulons que vous vous sentiez à l'aise. Faites un effort pour être à votre avantage, mais pas besoin de louer ou d'acheter une tenue spéciale. L'essentiel est que vous soyez vous-mêmes !
+            data-nl="We willen dat u zich op uw gemak voelt. Doe uw best om er op uw best uit te zien, maar het is niet nodig om speciale kleding te huren of te kopen. Het belangrijkste is dat u uzelf bent!">
+            Nous voulons que vous vous sentiez à l'aise. Faites un effort pour être à votre avantage, mais pas besoin de
+            louer ou d'acheter une tenue spéciale. L'essentiel est que vous soyez vous-mêmes !
           </p>
         </div>
       </section>
@@ -190,10 +177,11 @@
         </p>
         <div class="divider"></div>
         <a href="#infos" class="info-page-btn" onclick="navigateTo('infos');return false;"
-           data-fr="Voir les infos pratiques" data-nl="Praktische info bekijken">
+          data-fr="Voir les infos pratiques" data-nl="Praktische info bekijken">
           Voir les infos pratiques
         </a>
-        <p data-fr="À bientôt ✦" data-nl="Tot binnenkort ✦" style="margin-top:1.5rem; font-style:italic;">À bientôt ✦</p>
+        <p data-fr="À bientôt ✦" data-nl="Tot binnenkort ✦" style="margin-top:1.5rem; font-style:italic;">À bientôt ✦
+        </p>
       </div>
 
     </div>

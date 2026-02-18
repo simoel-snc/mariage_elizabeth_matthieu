@@ -725,7 +725,8 @@ body::before {
 }
 
 .info-link {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   font-family: 'Jost', sans-serif;
   font-weight: 400;
   font-size: 0.8rem;
@@ -743,6 +744,25 @@ body::before {
   background: var(--sage);
   color: var(--white);
   border-color: var(--sage);
+}
+
+.info-link .qr {
+  display: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .info-link .qr {
+    display: block;
+    width: 36px;
+    height: 36px;
+    margin-left: 0.8rem;
+    border-radius: 3px;
+    transition: filter 0.3s ease;
+  }
+
+  .info-link:hover .qr {
+    filter: brightness(3);
+  }
 }
 
 /* Timeline */
@@ -837,6 +857,7 @@ body::before {
   transform: translateY(-1px);
   box-shadow: 0 6px 20px rgba(94, 110, 82, 0.25);
 }
+
 
 /* === RESPONSIVE === */
 @media (max-width: 500px) {

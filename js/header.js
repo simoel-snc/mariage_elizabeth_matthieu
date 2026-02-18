@@ -134,6 +134,10 @@ function setLang(lang) {
     el.placeholder = el.dataset[`ph${lang.charAt(0).toUpperCase()}${lang.slice(1)}`];
   });
 
+  document.querySelectorAll('[data-src-fr]').forEach(el => {
+    el.src = el.dataset[`src${lang.charAt(0).toUpperCase()}${lang.slice(1)}`];
+  });
+
   // Call page-specific label update if it exists
   if (typeof updateGuestLabels === 'function') {
     updateGuestLabels();
