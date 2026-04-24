@@ -527,6 +527,88 @@ body::before {
   to { transform: rotate(360deg); }
 }
 
+/* === PIN ENTRY === */
+.pin-form {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  animation: fadeUp 0.8s ease-out;
+}
+
+.pin-inputs {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.pin-box {
+  width: 3rem;
+  height: 3.5rem;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.75rem;
+  font-weight: 500;
+  text-align: center;
+  border: 1px solid var(--sage-light);
+  border-radius: 4px;
+  background: var(--white);
+  color: var(--charcoal);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.pin-box:focus {
+  outline: none;
+  border-color: var(--sage);
+  box-shadow: 0 0 0 3px rgba(138, 154, 123, 0.12);
+}
+
+.pin-box.error {
+  border-color: var(--error);
+}
+
+.pin-submit {
+  padding: 0.75rem 2rem;
+  font-family: 'Jost', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  background: var(--sage);
+  color: var(--cream);
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.pin-submit:hover {
+  background: var(--sage-dark);
+}
+
+.pin-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pin-error {
+  color: var(--error);
+  font-size: 0.9rem;
+  margin-top: 0.25rem;
+  max-width: 320px;
+  text-align: center;
+}
+
+@media (max-width: 500px) {
+  .pin-box {
+    width: 2.75rem;
+    height: 3.25rem;
+    font-size: 1.6rem;
+  }
+  .pin-inputs {
+    gap: 0.5rem;
+  }
+}
+
 /* === THANK YOU SCREEN === */
 .thank-you {
   display: none;

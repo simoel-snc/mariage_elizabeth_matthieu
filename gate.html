@@ -42,10 +42,20 @@
           stroke-dasharray="3 2" />
       </svg>
     </div>
-    <p id="gateText" data-fr="Veuillez scanner le QR code figurant sur votre invitation pour accéder au site."
-      data-nl="Gelieve de QR-code op uw uitnodiging te scannen om de site te openen.">
-      Veuillez scanner le QR code figurant sur votre invitation pour accéder au site.
+    <p id="gateText" data-fr="Scannez le QR code de votre invitation ou saisissez votre code PIN."
+      data-nl="Scan de QR-code op uw uitnodiging of voer uw PIN-code in.">
+      Scannez le QR code de votre invitation ou saisissez votre code PIN.
     </p>
+    <form class="pin-form" id="pinForm" onsubmit="return false;" autocomplete="off">
+      <div class="pin-inputs" id="pinInputs">
+        <input type="tel" inputmode="numeric" maxlength="1" pattern="[0-9]" class="pin-box" aria-label="PIN 1">
+        <input type="tel" inputmode="numeric" maxlength="1" pattern="[0-9]" class="pin-box" aria-label="PIN 2">
+        <input type="tel" inputmode="numeric" maxlength="1" pattern="[0-9]" class="pin-box" aria-label="PIN 3">
+        <input type="tel" inputmode="numeric" maxlength="1" pattern="[0-9]" class="pin-box" aria-label="PIN 4">
+      </div>
+      <button type="submit" class="pin-submit" id="pinSubmit" data-fr="Valider" data-nl="Bevestigen">Valider</button>
+      <p class="pin-error" id="pinError" style="display:none"></p>
+    </form>
     <div class="gate-loader" id="gateLoader" style="display:none">
       <div class="spinner"></div>
     </div>
