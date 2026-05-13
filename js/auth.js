@@ -21,5 +21,5 @@ if (urlCode && urlCode !== localStorage.getItem('inviteCode')) {
   document.querySelector('.lang-toggle').style.display = '';
   document.querySelector('.header').style.display = '';
   document.querySelector('.container').style.display = '';
-  document.querySelector('.footer').style.display = '';
+  document.querySelector('.footer')?.style.setProperty('display', '');
 }

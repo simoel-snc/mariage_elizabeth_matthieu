@@ -1,6 +1,4 @@
-// ============================================================
-// CONFIGURATION
-// ============================================================
+// Apps Script backend (must match rsvp.js — see DEPLOY.md §4).
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzYmqNn8PU0vywrCUeoa8LCAXlBWv0Opl2x-g4g-5lXx-Xr-cyQ67jvR8T1dJ11Rkv6/exec';
 
 const GATE_MSG = {
@@ -18,30 +16,45 @@ const GATE_MSG = {
   }
 };
 
-// ============================================================
-// GATE LOGIC (setLang and currentLang provided by header.js)
-// ============================================================
+// currentLang is provided by header.js.
 const urlParams = new URLSearchParams(location.search);
 const urlCode = (urlParams.get('code') || '').trim();
 const storedCode = (localStorage.getItem('inviteCode') || '').trim();
-const redirect = urlParams.get('redirect') || 'index.html';
+
+// Same-origin redirect only. Reject anything that resolves to a different
+// origin (https://evil.com, //evil.com, javascript:, etc.) so the gate
+// can't be turned into a phishing entry point.
+const redirect = (() => {
+  const raw = urlParams.get('redirect');
+  if (!raw) return 'index.html';
+  try {
+    const url = new URL(raw, location.origin);
+    if (url.origin !== location.origin) return 'index.html';
+    return url.pathname + url.search + url.hash;
+  } catch {
+    return 'index.html';
+  }
+})();
 
 const pinBoxes = Array.from(document.querySelectorAll('.pin-box'));
 const pinError = document.getElementById('pinError');
 const pinForm = document.getElementById('pinForm');
+const pinSubmit = document.getElementById('pinSubmit');
+
+// Re-entry guard so the input auto-submit and the explicit click can't
+// both fire while a request is already in-flight.
+let submitting = false;
 
 function showLoader() {
-  document.getElementById('gateLoader').style.display = '';
-  document.getElementById('gateText').style.display = 'none';
-  document.querySelector('.gate-icon').style.display = 'none';
-  if (pinForm) pinForm.style.display = 'none';
+  document.getElementById('gateLoader')?.style.setProperty('display', '');
+  if (pinSubmit) pinSubmit.disabled = true;
+  pinBoxes.forEach(b => { b.disabled = true; });
 }
 
 function hideLoader() {
-  document.getElementById('gateLoader').style.display = 'none';
-  document.getElementById('gateText').style.display = '';
-  document.querySelector('.gate-icon').style.display = '';
-  if (pinForm) pinForm.style.display = '';
+  document.getElementById('gateLoader')?.style.setProperty('display', 'none');
+  if (pinSubmit) pinSubmit.disabled = false;
+  pinBoxes.forEach(b => { b.disabled = false; });
 }
 
 function goToSite() {
@@ -49,8 +62,13 @@ function goToSite() {
 }
 
 function showPinError(messageKey) {
-  const msg = GATE_MSG[messageKey]?.[currentLang] || GATE_MSG[messageKey]?.fr || '';
-  pinError.textContent = msg;
+  const entry = GATE_MSG[messageKey];
+  if (!entry) return;
+  // Stash both translations on the element so the global setLang()
+  // (which walks every [data-fr]) re-translates it on language toggle.
+  pinError.dataset.fr = entry.fr;
+  pinError.dataset.nl = entry.nl;
+  pinError.textContent = entry[currentLang] || entry.fr;
   pinError.style.display = '';
   pinBoxes.forEach(b => { b.value = ''; b.classList.add('error'); });
   pinBoxes[0]?.focus();
@@ -62,6 +80,8 @@ function clearPinError() {
 }
 
 async function validateCode(code) {
+  if (submitting) return;
+  submitting = true;
   clearPinError();
   showLoader();
   try {
@@ -70,10 +90,11 @@ async function validateCode(code) {
     if (result.status === 'valid') {
       localStorage.setItem('inviteCode', code);
       goToSite();
-      return;
+      return;  // submitting stays true on purpose — page is navigating away
     }
     localStorage.removeItem('inviteCode');
     hideLoader();
+    submitting = false;
     if (result.status === 'rate_limited') {
       showPinError('rateLimited');
     } else {
@@ -81,11 +102,11 @@ async function validateCode(code) {
     }
   } catch {
     hideLoader();
+    submitting = false;
     showPinError('network');
   }
 }
 
-// -- PIN input wiring --
 function readPin() {
   return pinBoxes.map(b => b.value).join('');
 }
@@ -146,12 +167,10 @@ pinForm?.addEventListener('submit', (e) => {
   submitPin();
 });
 
-// -- Main logic --
 if (urlCode && urlCode !== storedCode) {
   validateCode(urlCode);
 } else if (urlCode || storedCode) {
   goToSite();
 } else {
-  // No code → show gate with PIN entry; focus first box
   pinBoxes[0]?.focus();
 }

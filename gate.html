@@ -4,48 +4,51 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mariage</title>
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src 'self' 'unsafe-inline';
+    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+    font-src https://fonts.gstatic.com;
+    img-src 'self' data:;
+    connect-src 'self' https://script.google.com https://script.googleusercontent.com;
+    form-action 'self';
+    base-uri 'self';
+    object-src 'none';
+  ">
+  <title>Elizabeth &amp; Matthieu</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap"
     rel="stylesheet">
+  <link rel="preload" as="image" href="img/assets/orangerie-venue.webp">
+  <link rel="preload" as="image" href="img/assets/title-elizabeth-matthieu.webp">
   <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
 
-  <script>globalThis.PAGE_CONFIG = {};</script>
+  <script>globalThis.PAGE_CONFIG = { hideHeader: true };</script>
 
   <div class="gate-screen" id="gateScreen">
-    <div class="gate-icon">
-      <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- Phone outline -->
-        <rect x="35" y="12" width="50" height="88" rx="8" stroke="currentColor" stroke-width="2" />
-        <rect x="39" y="22" width="42" height="64" rx="2" fill="rgba(138,154,123,0.08)" stroke="currentColor"
-          stroke-width="1.5" />
-        <circle cx="60" cy="95" r="3" stroke="currentColor" stroke-width="1.5" />
-        <!-- QR code pattern on screen -->
-        <rect x="46" y="34" width="10" height="10" rx="1" stroke="currentColor" stroke-width="1.5" />
-        <rect x="48" y="36" width="6" height="6" rx="0.5" fill="currentColor" opacity="0.4" />
-        <rect x="64" y="34" width="10" height="10" rx="1" stroke="currentColor" stroke-width="1.5" />
-        <rect x="66" y="36" width="6" height="6" rx="0.5" fill="currentColor" opacity="0.4" />
-        <rect x="46" y="52" width="10" height="10" rx="1" stroke="currentColor" stroke-width="1.5" />
-        <rect x="48" y="54" width="6" height="6" rx="0.5" fill="currentColor" opacity="0.4" />
-        <rect x="59" y="47" width="3" height="3" fill="currentColor" opacity="0.3" />
-        <rect x="64" y="52" width="3" height="3" fill="currentColor" opacity="0.3" />
-        <rect x="70" y="56" width="3" height="3" fill="currentColor" opacity="0.3" />
-        <rect x="59" y="56" width="3" height="3" fill="currentColor" opacity="0.3" />
-        <rect x="64" y="59" width="3" height="3" fill="currentColor" opacity="0.3" />
-        <!-- Scan lines -->
-        <line x1="43" y1="70" x2="77" y2="70" stroke="currentColor" stroke-width="1" opacity="0.3"
-          stroke-dasharray="3 2" />
-      </svg>
-    </div>
-    <p id="gateText" data-fr="Scannez le QR code de votre invitation ou saisissez votre code PIN."
-      data-nl="Scan de QR-code op uw uitnodiging of voer uw PIN-code in.">
-      Scannez le QR code de votre invitation ou saisissez votre code PIN.
+
+    <picture>
+      <source srcset="img/assets/orangerie-venue.webp" type="image/webp">
+      <img class="gate-hero" src="img/assets/orangerie-venue.png" alt="L'Orangerie du Chenoy"
+        width="1523" height="997">
+    </picture>
+
+    <picture>
+      <source srcset="img/assets/title-elizabeth-matthieu.webp" type="image/webp">
+      <img class="gate-wordmark" src="img/assets/title-elizabeth-matthieu.png" alt="Elizabeth & Matthieu"
+        width="780" height="139">
+    </picture>
+
+    <p id="gateText" data-fr="Veuillez saisir votre mot de passe."
+      data-nl="Gelieve uw wachtwoord in te voeren.">
+      Veuillez saisir votre mot de passe.
     </p>
+
     <form class="pin-form" id="pinForm" onsubmit="return false;" autocomplete="off">
       <div class="pin-inputs" id="pinInputs">
         <input type="tel" inputmode="numeric" maxlength="1" pattern="[0-9]" class="pin-box" aria-label="PIN 1">
@@ -56,9 +59,19 @@
       <button type="submit" class="pin-submit" id="pinSubmit" data-fr="Valider" data-nl="Bevestigen">Valider</button>
       <p class="pin-error" id="pinError" style="display:none"></p>
     </form>
+
     <div class="gate-loader" id="gateLoader" style="display:none">
       <div class="spinner"></div>
     </div>
+
+    <!-- Hidden chick peeking from the bottom right of the gate card -->
+    <div class="deco deco-chick-corner" aria-hidden="true">
+      <picture>
+        <source srcset="img/assets/chick-single.webp" type="image/webp">
+        <img src="img/assets/chick-single.png" alt="" width="113" height="144">
+      </picture>
+    </div>
+
   </div>
 
   <script src="js/header.js"></script>

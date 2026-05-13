@@ -7,5 +7,13 @@ SETUP.md
 # Claude Code config
 CLAUDE.md
 
-# Generated QR code for the wedding invitation (kept local, not deployed)
-invite-qr.png
+# Generated QR codes for the wedding invitation (kept local, not deployed)
+invite-qr*.png
+
+# The wedding PIN (read by scripts/generate-qr.py). NEVER commit.
+.pin
+
+invite
+
+# Local-only preview thumbnails generated during planning
+img/_previews/

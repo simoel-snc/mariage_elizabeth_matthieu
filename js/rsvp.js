@@ -1,11 +1,6 @@
-// ============================================================
-// CONFIGURATION — Replace this URL with your Google Apps Script
-// ============================================================
+// Apps Script backend (must match the deployment in gate.js — see DEPLOY.md §4).
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzYmqNn8PU0vywrCUeoa8LCAXlBWv0Opl2x-g4g-5lXx-Xr-cyQ67jvR8T1dJ11Rkv6/exec';
 
-// ============================================================
-// TRANSLATIONS
-// ============================================================
 const T = {
   fr: {
     guestN: 'Invité',
@@ -58,12 +53,13 @@ function t(key) {
   return T[currentLang][key] || key;
 }
 
+// Translates labels inside dynamically-generated guest cards. Placeholders
+// and the add/submit buttons are handled by setLang() via their data-fr/
+// data-ph-fr attributes — no need to touch them here.
 function updateGuestLabels() {
   document.querySelectorAll('.guest-card').forEach((card, idx) => {
-    const num = idx + 1;
-    card.querySelector('.guest-number').textContent = `${t('guestN')} ${num}`;
+    card.querySelector('.guest-number').textContent = `${t('guestN')} ${idx + 1}`;
     card.querySelector('.field-label-name').textContent = t('name');
-    card.querySelector('.name-input').placeholder = t('namePlaceholder');
     card.querySelector('.field-label-presence').textContent = t('presence');
     card.querySelector('.label-yes').textContent = t('yes');
     card.querySelector('.label-no').textContent = t('no');
@@ -71,20 +67,9 @@ function updateGuestLabels() {
     card.querySelector('.label-reception .checkbox-text').textContent = t('reception');
     card.querySelector('.label-diner .checkbox-text').textContent = t('diner');
     card.querySelector('.field-label-allergies').textContent = t('allergies');
-    card.querySelector('.allergies-input').placeholder = t('allergiesPlaceholder');
   });
-
-  // Update add button and submit
-  const addBtn = document.querySelector('.add-guest-btn span[data-fr]');
-  if (addBtn) addBtn.textContent = t('addGuest');
-
-  const subBtn = document.querySelector('#submitBtn span[data-fr]');
-  if (subBtn) subBtn.textContent = t('submit');
 }
 
-// ============================================================
-// GUEST CARD MANAGEMENT
-// ============================================================
 function addGuest() {
   guestCount++;
   const id = guestCount;
@@ -105,7 +90,7 @@ function addGuest() {
   <!-- Name -->
   <div class="field-group">
     <label class="field-label field-label-name">${t('name')}</label>
-    <input type="text" class="text-input name-input" placeholder="${t('namePlaceholder')}"
+    <input type="text" class="text-input name-input" maxlength="100" placeholder="${t('namePlaceholder')}"
            data-ph-fr="${T.fr.namePlaceholder}" data-ph-nl="${T.nl.namePlaceholder}">
   </div>
 
@@ -151,7 +136,7 @@ function addGuest() {
     <!-- Allergies -->
     <div class="field-group">
       <label class="field-label field-label-allergies">${t('allergies')}</label>
-      <input type="text" class="text-input allergies-input" placeholder="${t('allergiesPlaceholder')}"
+      <input type="text" class="text-input allergies-input" maxlength="300" placeholder="${t('allergiesPlaceholder')}"
              data-ph-fr="${T.fr.allergiesPlaceholder}" data-ph-nl="${T.nl.allergiesPlaceholder}">
     </div>
   </div>
@@ -180,9 +165,6 @@ function renumberGuests() {
   });
 }
 
-// ============================================================
-// CHECKBOX LOGIC
-// ============================================================
 function toggleConditional(id) {
   const yesChecked = document.getElementById(`present-yes-${id}`).checked;
   const conditional = document.getElementById(`conditional-${id}`);
@@ -194,17 +176,17 @@ function toggleConditional(id) {
 }
 
 
-// ============================================================
-// FORM SUBMISSION
-// ============================================================
 async function submitForm() {
   const btn = document.getElementById('submitBtn');
   const statusEl = document.getElementById('statusMessage');
   statusEl.className = 'status-message';
   statusEl.style.display = 'none';
 
-  // Honeypot check — if filled, silently pretend success (it's a bot)
-  if (document.getElementById('honeypot').value) {
+  // Bot trap — honeypot filled OR submitted suspiciously fast. Silently
+  // pretend success so the bot doesn't learn what tripped it.
+  const isBot = document.getElementById('honeypot').value
+    || Date.now() - formLoadedAt < MIN_FORM_DURATION_MS;
+  if (isBot) {
     document.querySelector('.form-section').style.display = 'none';
     document.querySelector('.intro').style.display = 'none';
     document.getElementById('thankYou').classList.add('visible');
@@ -213,48 +195,31 @@ async function submitForm() {
 
   const inviteCode = document.getElementById('inviteCode').value.trim();
 
-  // Collect data
-  const cards = document.querySelectorAll('.guest-card');
   const guests = [];
-  let valid = true;
   let errorMsg = '';
 
-  cards.forEach((card) => {
+  for (const card of document.querySelectorAll('.guest-card')) {
     const name = card.querySelector('.name-input').value.trim();
-    if (!name) { valid = false; errorMsg = t('errorName'); return; }
+    if (!name) { errorMsg = t('errorName'); break; }
 
     const cardId = card.id.split('-')[1];
     const yesEl = document.getElementById(`present-yes-${cardId}`);
     const noEl = document.getElementById(`present-no-${cardId}`);
-
-    if (!yesEl.checked && !noEl.checked) {
-      valid = false; errorMsg = t('errorPresence'); return;
-    }
+    if (!yesEl.checked && !noEl.checked) { errorMsg = t('errorPresence'); break; }
 
     const present = yesEl.checked;
-
-    let reception = false;
-    let diner = false;
-    let allergies = '';
-
-    if (present) {
-      reception = document.getElementById(`reception-${cardId}`).checked;
-      diner = document.getElementById(`diner-${cardId}`).checked;
-      allergies = card.querySelector('.allergies-input').value.trim();
-    }
-
     guests.push({
       name,
       present,
-      reception,
-      diner,
-      allergies,
+      reception: present && document.getElementById(`reception-${cardId}`).checked,
+      diner:     present && document.getElementById(`diner-${cardId}`).checked,
+      allergies: present ? card.querySelector('.allergies-input').value.trim() : '',
       language: currentLang,
       submittedAt: new Date().toISOString()
     });
-  });
+  }
 
-  if (!valid) {
+  if (errorMsg) {
     statusEl.className = 'status-message error';
     statusEl.textContent = errorMsg;
     statusEl.style.display = 'block';
@@ -302,11 +267,12 @@ async function submitForm() {
   }
 }
 
-// ============================================================
-// INIT
-// ============================================================
+// Used by the bot-trap below: a real guest takes at least a few seconds
+// to read the form and start typing. Scripts that POST immediately fail
+// this threshold.
+const formLoadedAt = Date.now();
+const MIN_FORM_DURATION_MS = 1500;
 
-// Initialize form (auth.js handles access check and page reveal)
 document.getElementById('inviteCode').value = localStorage.getItem('inviteCode') || '';
 addGuest();
 

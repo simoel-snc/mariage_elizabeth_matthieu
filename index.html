@@ -4,12 +4,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Elizabeth & Matthieu</title>
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src 'self' 'unsafe-inline';
+    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+    font-src https://fonts.gstatic.com;
+    img-src 'self' data:;
+    frame-src https://www.google.com https://maps.google.com;
+    connect-src 'self' https://script.google.com https://script.googleusercontent.com;
+    form-action 'self';
+    base-uri 'self';
+    object-src 'none';
+  ">
+  <title>Elizabeth &amp; Matthieu</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap"
     rel="stylesheet">
+  <link rel="preload" as="image" href="img/assets/title-elizabeth-matthieu.webp">
+  <link rel="preload" as="image" href="img/assets/date-29-aout.webp">
+  <link rel="preload" as="image" href="img/assets/pear-trees-left.webp">
+  <link rel="preload" as="image" href="img/assets/pear-trees-right.webp">
   <link rel="stylesheet" href="css/style.css">
 </head>
 
@@ -18,8 +34,9 @@
   <script>globalThis.PAGE_CONFIG = {
       nav: true,
       pages: {
-        infos: { fr: 'Infos Pratiques', nl: 'Praktische Info' },
-        rsvp: { fr: 'Nous nous marions', nl: 'Wij gaan trouwen' }
+        infos:     { fr: 'Programme',         nl: 'Programma',          shortFr: 'Programme',  shortNl: 'Programma' },
+        dresscode: { fr: 'Dress Code',        nl: 'Kledingcode',        shortFr: 'Dress Code', shortNl: 'Kledingcode' },
+        rsvp:      { fr: 'Nous nous marions', nl: 'Wij gaan trouwen',   shortFr: 'RSVP',       shortNl: 'RSVP' }
       }
     };</script>
 
@@ -29,101 +46,126 @@
     <!-- ==================== INFOS PAGE ==================== -->
     <div class="page" id="page-infos">
 
-      <!-- PROGRAMME -->
+      <!-- VENUE 1 — ÉGLISE SAINT-ÉTIENNE -->
       <section class="info-section">
-        <h2 class="info-section-title" data-fr="Programme" data-nl="Programma">Programme</h2>
-        <div class="timeline">
-          <div class="timeline-item">
-            <div class="timeline-time">15:00</div>
-            <div class="timeline-content">
-              <h3 data-fr="Cérémonie religieuse" data-nl="Kerkelijke ceremonie">Cérémonie religieuse</h3>
-              <p data-fr="Eglise Saint-Étienne" data-nl="Sint-Stefanuskerk">Eglise Saint-Étienne</p>
+        <div class="info-card venue-card">
+          <picture>
+            <source srcset="img/assets/scene-church.webp" type="image/webp">
+            <img class="section-icon" src="img/assets/scene-church.png" alt="" width="148" height="232" loading="lazy">
+          </picture>
+          <div class="venue-times">
+            <div class="venue-time-row">
+              <span class="venue-time">15:00</span>
+              <span class="venue-event" data-fr="Cérémonie religieuse" data-nl="Kerkelijke ceremonie">Cérémonie religieuse</span>
             </div>
           </div>
-          <div class="timeline-item">
-            <div class="timeline-time">17:00</div>
-            <div class="timeline-content">
-              <h3 data-fr="Réception" data-nl="Receptie">Réception</h3>
-              <p>Le Chenoy</p>
-            </div>
-          </div>
-          <div class="timeline-item">
-            <div class="timeline-time">19:30</div>
-            <div class="timeline-content">
-              <h3 data-fr="Dîner" data-nl="Diner">Dîner</h3>
-              <p>Le Chenoy</p>
-            </div>
-          </div>
-          <div class="timeline-item">
-            <div class="timeline-content">
-              <h3 data-fr="Soirée" data-nl="Avondfeest">Soirée</h3>
-              <p>Le Chenoy</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <div class="divider"></div>
-
-      <!-- CHURCH -->
-      <section class="info-section">
-        <h2 class="info-section-title" data-fr="Cérémonie" data-nl="Ceremonie">Cérémonie</h2>
-        <div class="info-card">
-          <h3 data-fr="Eglise Saint-Étienne de Court-Saint-Étienne" data-nl="Sint-Stefanuskerk van Court-Saint-Étienne">
-            Eglise Saint-Étienne de Court-Saint-Étienne</h3>
+          <h3 data-fr="Église Saint-Étienne de Court-Saint-Étienne" data-nl="Sint-Stefanuskerk van Court-Saint-Étienne">
+            Église Saint-Étienne de Court-Saint-Étienne</h3>
           <p class="info-address">Rue du Village 1, 1490 Court-Saint-Étienne</p>
           <div class="info-map">
             <iframe
               src="https://maps.google.com/maps?q=Eglise+Saint-Etienne+Rue+du+Village+1+Court-Saint-Etienne&z=15&output=embed"
-              title="Eglise Saint-Étienne de Court-Saint-Étienne" allowfullscreen="" loading="lazy"
+              title="Église Saint-Étienne de Court-Saint-Étienne" allowfullscreen="" loading="lazy"
               referrerpolicy="no-referrer-when-downgrade">
             </iframe>
           </div>
           <a href="https://www.google.com/maps/place//data=!4m2!3m1!1s0x47c3d58f5ba09869:0xe15385fa60ff5af3"
-            class="info-link" target="_blank" rel="noopener">
+            class="info-link" target="_blank" rel="noopener"
+            data-href-google="https://www.google.com/maps/place//data=!4m2!3m1!1s0x47c3d58f5ba09869:0xe15385fa60ff5af3"
+            data-href-apple="https://maps.apple.com/?daddr=50.6427124,4.5689791&dirflg=d"
+            data-href-waze="https://waze.com/ul?ll=50.6427124,4.5689791&navigate=yes">
             <span data-fr="Naviguer vers l'église" data-nl="Navigeer naar de kerk">Naviguer vers l'église</span>
             <img class="qr" src="img/qr-church.png" alt="">
           </a>
         </div>
       </section>
 
-      <div class="divider"></div>
+      <hr class="divider gingham">
 
-      <!-- VENUE -->
+      <!-- VENUE 2 — LE CHENOY (réception + dîner + soirée) -->
       <section class="info-section">
-        <h2 class="info-section-title" data-fr="Réception & Dîner" data-nl="Receptie & Diner">Réception & Dîner
-        </h2>
-        <div class="info-card">
+        <div class="info-card venue-card">
+          <picture>
+            <source srcset="img/assets/scene-plate.webp" type="image/webp">
+            <img class="section-icon" src="img/assets/scene-plate.png" alt="" width="138" height="115" loading="lazy">
+          </picture>
+          <div class="venue-times">
+            <div class="venue-time-row">
+              <span class="venue-time">17:00</span>
+              <span class="venue-event" data-fr="Réception" data-nl="Receptie">Réception</span>
+            </div>
+            <div class="venue-time-row">
+              <span class="venue-time">19:30</span>
+              <span class="venue-event" data-fr="Dîner" data-nl="Diner">Dîner</span>
+            </div>
+            <div class="venue-time-row">
+              <span class="venue-time">21:30</span>
+              <span class="venue-event" data-fr="Soirée" data-nl="Avondfeest">Soirée</span>
+            </div>
+          </div>
           <h3>Le Chenoy</h3>
           <p class="info-address">Rue du Chenoy 1, 1490 Court-Saint-Étienne</p>
           <p class="info-note" data-fr="Accès par la Rue Vital Casse" data-nl="Toegang via Rue Vital Casse">
             Accès par la Rue Vital Casse</p>
           <div class="info-map">
             <iframe
-              src="https://maps.google.com/maps?saddr=50.6427124359001,4.568979069426987&daddr=50.6195612296689,4.594149210339521+to:50.616845122845824,4.5867892292992&dirflg=d&output=embed"
+              src="https://maps.google.com/maps?saddr=50.6427124359001,4.568979069426987&daddr=50.6284462,4.5923186+to:50.6168451,4.5867892&dirflg=d&output=embed"
               title="Itinéraire église → Le Chenoy" allowfullscreen="" loading="lazy"
               referrerpolicy="no-referrer-when-downgrade">
             </iframe>
           </div>
-          <a href="https://www.google.com/maps/dir//50.6195612296689,4.594149210339521/50.616845122845824,4.5867892292992"
-            class="info-link" target="_blank" rel="noopener">
+          <a href="https://www.google.com/maps/dir/%C3%89glise+Saint-%C3%89tienne+de+Court-Saint-%C3%89tienne,+Rue+du+Village+1,+1490+Court-Saint-%C3%89tienne/50.6284462,4.5923186/50.6168451,4.5867892/"
+            class="info-link" target="_blank" rel="noopener"
+            data-href-google="https://www.google.com/maps/dir/%C3%89glise+Saint-%C3%89tienne+de+Court-Saint-%C3%89tienne,+Rue+du+Village+1,+1490+Court-Saint-%C3%89tienne/50.6284462,4.5923186/50.6168451,4.5867892/"
+            data-href-apple="https://maps.apple.com/?daddr=50.6168451,4.5867892&dirflg=d"
+            data-href-waze="https://waze.com/ul?ll=50.6168451,4.5867892&navigate=yes">
             <span data-fr="Naviguer vers le parking" data-nl="Navigeer naar de parking">Naviguer vers le parking</span>
             <img class="qr" src="img/qr-parking.png" alt="">
           </a>
         </div>
       </section>
 
-      <div class="divider"></div>
+      <!-- Hidden chick peeking from the bottom-left of the infos page -->
+      <div class="deco deco-chick-bottom-left" aria-hidden="true">
+        <picture>
+          <source srcset="img/assets/chick-single.webp" type="image/webp">
+          <img src="img/assets/chick-single.png" alt="" width="113" height="144">
+        </picture>
+      </div>
 
-      <!-- DRESS CODE -->
+      <!-- Bigger chicken — walks across the right margin between cards -->
+      <div class="deco deco-chicken-1" aria-hidden="true">
+        <picture>
+          <source srcset="img/assets/chicken-1.webp" type="image/webp">
+          <img src="img/assets/chicken-1.png" alt="" width="300" height="385">
+        </picture>
+      </div>
+
+    </div>
+
+    <!-- ==================== DRESS CODE PAGE ==================== -->
+    <div class="page" id="page-dresscode">
+
       <section class="info-section">
-        <h2 class="info-section-title" data-fr="Dress Code" data-nl="Kledingcode">Dress Code</h2>
         <div class="info-card dress-code-card">
+          <picture>
+            <source srcset="img/assets/scene-vanity.webp" type="image/webp">
+            <img class="section-icon lg" src="img/assets/scene-vanity.png" alt="" width="497" height="455" loading="lazy">
+          </picture>
+          <h3 data-fr="Dress Code" data-nl="Kledingcode">Dress Code</h3>
           <p data-fr="Nous voulons que vous vous sentiez à l'aise. Faites un effort pour être à votre avantage, mais pas besoin de louer ou d'acheter une tenue spéciale. L'essentiel est que vous soyez vous-mêmes !"
             data-nl="We willen dat u zich op uw gemak voelt. Doe uw best om er op uw best uit te zien, maar het is niet nodig om speciale kleding te huren of te kopen. Het belangrijkste is dat u uzelf bent!">
             Nous voulons que vous vous sentiez à l'aise. Faites un effort pour être à votre avantage, mais pas besoin de
             louer ou d'acheter une tenue spéciale. L'essentiel est que vous soyez vous-mêmes !
           </p>
+
+          <!-- Sitting hen with chick — peeking from the bottom-right corner of the card -->
+          <div class="deco deco-chicken-mother" aria-hidden="true">
+            <picture>
+              <source srcset="img/assets/chicken-mother.webp" type="image/webp">
+              <img src="img/assets/chicken-mother.png" alt="" width="257" height="251">
+            </picture>
+          </div>
         </div>
       </section>
 
@@ -147,10 +189,12 @@
         <!-- Invitation code (auto-filled from localStorage) -->
         <input type="hidden" id="inviteCode">
 
-        <!-- Honeypot — invisible to humans, bots will fill it -->
+        <!-- Honeypot — invisible to humans, bots fill it. Field name is
+             intentionally generic ("nickname") to avoid the obvious "website"
+             pattern that bot frameworks skip. -->
         <div style="position:absolute;left:-9999px;top:-9999px;" aria-hidden="true">
-          <label for="website">Website</label>
-          <input type="text" id="honeypot" name="website" tabindex="-1" autocomplete="off">
+          <label for="honeypot">Nickname</label>
+          <input type="text" id="honeypot" name="nickname" tabindex="-1" autocomplete="off">
         </div>
 
         <div id="guestsContainer"></div>
@@ -169,30 +213,53 @@
 
       <!-- Thank You Screen -->
       <div class="thank-you" id="thankYou">
-        <div class="heart-icon">♥</div>
+        <picture>
+          <source srcset="img/assets/scene-chicken-dance.webp" type="image/webp">
+          <img class="thank-illustration" src="img/assets/scene-chicken-dance.png" alt=""
+            width="240" height="259">
+        </picture>
         <h2 data-fr="Merci !" data-nl="Bedankt!">Merci !</h2>
         <p data-fr="Votre réponse a bien été enregistrée. Nous avons hâte de partager ce moment avec vous !"
           data-nl="Uw antwoord is geregistreerd. We kijken ernaar uit om dit moment met u te delen!">
           Votre réponse a bien été enregistrée. Nous avons hâte de partager ce moment avec vous !
         </p>
-        <div class="divider"></div>
+        <hr class="divider gingham">
         <a href="#infos" class="info-page-btn" onclick="navigateTo('infos');return false;"
           data-fr="Voir les infos pratiques" data-nl="Praktische info bekijken">
           Voir les infos pratiques
         </a>
-        <p data-fr="À bientôt ✦" data-nl="Tot binnenkort ✦" style="margin-top:1.5rem; font-style:italic;">À bientôt ✦
-        </p>
+      </div>
+
+      <!-- Hidden chick peeking from the bottom-left, under the submit button -->
+      <div class="deco deco-chick-bottom-left" aria-hidden="true">
+        <picture>
+          <source srcset="img/assets/chick-single.webp" type="image/webp">
+          <img src="img/assets/chick-single.png" alt="" width="113" height="144">
+        </picture>
+      </div>
+
+      <!-- Chicken perched on a fence — peeking from the right above the form -->
+      <div class="deco deco-chicken-fence" aria-hidden="true">
+        <picture>
+          <source srcset="img/assets/chicken-3-fence.webp" type="image/webp">
+          <img src="img/assets/chicken-3-fence.png" alt="" width="406" height="465">
+        </picture>
       </div>
 
     </div>
 
   </div>
 
-  <footer class="footer" style="display:none">✦</footer>
+  <footer class="footer" style="display:none">
+    <a class="illustrator-credit" href="https://www.cathboelillustrations.com/" target="_blank" rel="noopener noreferrer">
+      Catherine Boël Illustrations
+    </a>
+  </footer>
 
   <script src="js/header.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/rsvp.js"></script>
+  <script src="js/maps.js"></script>
 
 </body>
 

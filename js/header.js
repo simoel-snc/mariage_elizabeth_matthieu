@@ -1,16 +1,15 @@
-// ============================================================
-// SHARED HEADER COMPONENT
-// ============================================================
-// Injects the header, language toggle, and provides setLang().
-// Each page sets globalThis.PAGE_CONFIG before loading this script.
-//
-// Config options:
-//   pages:  { infos: {fr,nl}, rsvp: {fr,nl} } — page titles (SPA)
-//   nav:    boolean — show navigation links (default: false)
+// Shared header component. Pages set globalThis.PAGE_CONFIG before
+// loading this script.
+//   pages:      { slug: { fr, nl, shortFr?, shortNl? }, ... } — SPA pages
+//   nav:        boolean — render navigation links
+//   hideHeader: boolean — skip the auto-injected wordmark (e.g. gate.html)
 
 const PAGE = globalThis.PAGE_CONFIG || {};
 
-// -- Determine initial page from hash --
+const SUPPORTED_LANGS = new Set(['fr', 'nl']);
+const storedLang = localStorage.getItem('lang');
+let currentLang = SUPPORTED_LANGS.has(storedLang) ? storedLang : 'fr';
+
 function getPageFromHash() {
   const hash = location.hash.replace('#', '');
   return PAGE.pages?.[hash] ? hash : 'infos';
@@ -18,130 +17,108 @@ function getPageFromHash() {
 
 let currentPage = getPageFromHash();
 
-// -- Inject language toggle --
 const langToggleHTML = `
   <div class="lang-toggle"${PAGE.nav ? ' style="display:none"' : ''}>
-    <button class="lang-btn active" onclick="setLang('fr')">FR</button>
-    <button class="lang-btn" onclick="setLang('nl')">NL</button>
+    <button type="button" class="lang-btn" data-lang="fr" onclick="setLang('fr')">FR</button>
+    <button type="button" class="lang-btn" data-lang="nl" onclick="setLang('nl')">NL</button>
   </div>
 `;
 document.body.insertAdjacentHTML('afterbegin', langToggleHTML);
 
-// -- Inject header --
 const pageTitleHTML = PAGE.pages
-  ? `<p class="page-title" data-fr="${PAGE.pages[currentPage].fr}" data-nl="${PAGE.pages[currentPage].nl}">${PAGE.pages[currentPage].fr}</p>`
+  ? (() => {
+      const p = PAGE.pages[currentPage];
+      return `<p class="page-title" data-fr="${p.fr}" data-nl="${p.nl}">${p[currentLang]}</p>`;
+    })()
   : '';
 
-const navHTML = PAGE.nav
+// Build nav from PAGE.pages — short labels keep the nav row tight when
+// the page-title itself is long (e.g. "Nous nous marions" → "RSVP").
+const navHTML = PAGE.nav && PAGE.pages
   ? `<nav class="nav">
-      <a href="#infos" onclick="navigateTo('infos');return false;" data-fr="Infos" data-nl="Info" data-page="infos">Infos</a>
-      <a href="#rsvp" onclick="navigateTo('rsvp');return false;" data-fr="RSVP" data-nl="RSVP" data-page="rsvp">RSVP</a>
+      ${Object.entries(PAGE.pages).map(([slug, p]) => {
+        const fr = p.shortFr || p.fr;
+        const nl = p.shortNl || p.nl;
+        const label = currentLang === 'fr' ? fr : nl;
+        return `<a href="#${slug}" onclick="navigateTo('${slug}');return false;" data-fr="${fr}" data-nl="${nl}" data-page="${slug}">${label}</a>`;
+      }).join('\n      ')}
     </nav>`
   : '';
 
 const headerHTML = `
   <header class="header"${PAGE.nav ? ' style="display:none"' : ''}>
-    <div class="ornament">✦ ✦ ✦</div>
-    <h1>Elizabeth et Matthieu</h1>
+    <picture>
+      <source srcset="img/assets/title-elizabeth-matthieu.webp" type="image/webp">
+      <img class="wordmark" src="img/assets/title-elizabeth-matthieu.png" alt="Elizabeth & Matthieu" width="780" height="139">
+    </picture>
+    <picture>
+      <source srcset="img/assets/date-29-aout.webp" type="image/webp">
+      <img class="wordmark-date" src="img/assets/date-29-aout.png" alt="29 août 2026" width="405" height="104">
+    </picture>
     ${pageTitleHTML}
-    <div class="divider"></div>
     ${navHTML}
   </header>
 `;
 
-const headerContainer = document.querySelector('.container') || document.querySelector('.gate-screen');
-if (headerContainer) {
-  headerContainer.insertAdjacentHTML('beforebegin', headerHTML);
+if (!PAGE.hideHeader) {
+  const host = document.querySelector('.container') || document.querySelector('.gate-screen');
+  host?.insertAdjacentHTML('beforebegin', headerHTML);
 }
 
-// -- SPA navigation --
-function navigateTo(page) {
-  if (!PAGE.pages?.[page]) return;
+// Show the named page section, refresh the page-title, and sync the nav.
+// Used by both navigateTo (click) and the popstate handler (back/forward).
+function applyPage(page) {
   currentPage = page;
 
-  // Switch page sections
   document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
-  const target = document.getElementById(`page-${page}`);
-  if (target) target.classList.add('active');
+  document.getElementById(`page-${page}`)?.classList.add('active');
 
-  // Update page title
   const titleEl = document.querySelector('.page-title');
-  if (titleEl) {
-    titleEl.dataset.fr = PAGE.pages[page].fr;
-    titleEl.dataset.nl = PAGE.pages[page].nl;
-    titleEl.textContent = PAGE.pages[page][currentLang];
+  const meta = PAGE.pages?.[page];
+  if (titleEl && meta) {
+    titleEl.dataset.fr = meta.fr;
+    titleEl.dataset.nl = meta.nl;
+    titleEl.textContent = meta[currentLang];
   }
 
-  // Update nav active state
   document.querySelectorAll('.nav a[data-page]').forEach(a => {
     a.classList.toggle('active', a.dataset.page === page);
   });
+}
 
-  // Update URL hash without triggering popstate
+function navigateTo(page) {
+  if (!PAGE.pages?.[page]) return;
+  applyPage(page);
   history.pushState(null, '', `#${page}`);
-
-  // Scroll to top
   globalThis.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// Handle browser back/forward
 globalThis.addEventListener('popstate', () => {
   const page = getPageFromHash();
-  if (page !== currentPage) {
-    currentPage = page;
-    document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
-    const target = document.getElementById(`page-${page}`);
-    if (target) target.classList.add('active');
-
-    const titleEl = document.querySelector('.page-title');
-    if (titleEl && PAGE.pages) {
-      titleEl.dataset.fr = PAGE.pages[page].fr;
-      titleEl.dataset.nl = PAGE.pages[page].nl;
-      titleEl.textContent = PAGE.pages[page][currentLang];
-    }
-
-    document.querySelectorAll('.nav a[data-page]').forEach(a => {
-      a.classList.toggle('active', a.dataset.page === page);
-    });
-  }
+  if (page !== currentPage) applyPage(page);
 });
 
-// Set initial nav active state
-document.querySelectorAll('.nav a[data-page]').forEach(a => {
-  a.classList.toggle('active', a.dataset.page === currentPage);
-});
-
-// Set initial page section
-const initialPage = document.getElementById(`page-${currentPage}`);
-if (initialPage) {
-  initialPage.classList.add('active');
-}
-
-// -- Language switching --
-let currentLang = localStorage.getItem('lang') || 'fr';
+applyPage(currentPage);
 
 function setLang(lang) {
+  if (!SUPPORTED_LANGS.has(lang)) lang = 'fr';
   currentLang = lang;
   localStorage.setItem('lang', lang);
-  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-  document.querySelector(`.lang-btn[onclick="setLang('${lang}')"]`).classList.add('active');
+
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === lang);
+  });
 
   document.querySelectorAll('[data-fr]').forEach(el => {
     el.textContent = el.dataset[lang];
   });
 
+  const phKey = 'ph' + lang.charAt(0).toUpperCase() + lang.slice(1);
   document.querySelectorAll('[data-ph-fr]').forEach(el => {
-    el.placeholder = el.dataset[`ph${lang.charAt(0).toUpperCase()}${lang.slice(1)}`];
+    el.placeholder = el.dataset[phKey];
   });
 
-  document.querySelectorAll('[data-src-fr]').forEach(el => {
-    el.src = el.dataset[`src${lang.charAt(0).toUpperCase()}${lang.slice(1)}`];
-  });
-
-  // Call page-specific label update if it exists
-  if (typeof updateGuestLabels === 'function') {
-    updateGuestLabels();
-  }
+  if (typeof updateGuestLabels === 'function') updateGuestLabels();
 }
 
 setLang(currentLang);
