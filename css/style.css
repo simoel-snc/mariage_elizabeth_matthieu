@@ -870,7 +870,9 @@ textarea.text-input:focus {
   letter-spacing: 0.04em;
 }
 
-.thank-you p {
+/* Direct-child only — otherwise this margin: 0 auto bulldozes the bottom
+   margins of nested bonus paragraphs (.bonus-question, .bonus-outcome-intro). */
+.thank-you > p {
   font-size: 1rem;
   color: var(--ink-soft);
   line-height: 1.85;
@@ -915,7 +917,26 @@ textarea.text-input:focus {
   color: var(--ink);
   line-height: 1.55;
   max-width: 420px;
-  margin: 0 auto 1.25rem;
+  margin: 0 auto 1.75rem;
+}
+
+.bonus-outcome-subtitle {
+  font-family: var(--sans);
+  font-size: 1.1rem;
+  font-weight: 500;
+  font-style: italic;
+  color: var(--sage-deep);
+  letter-spacing: 0.02em;
+  text-align: center;
+  margin: 0 auto 1.5rem;
+}
+
+.bonus-outcome-intro {
+  font-size: 1.05rem;
+  color: var(--ink);
+  line-height: 1.65;
+  max-width: 460px;
+  margin: 0 auto 2.5rem;
 }
 
 /* Tries counter: text label on top, chicken row below. JS keeps both
@@ -926,7 +947,7 @@ textarea.text-input:focus {
   flex-direction: column;
   align-items: center;
   gap: 0.4rem;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.75rem;
 }
 
 .bonus-lives-label {
@@ -947,15 +968,38 @@ textarea.text-input:focus {
 
 .bonus-lives .life {
   display: inline-block;
-  font-size: 1.5rem;
+  position: relative;
   margin: 0 0.18rem;
-  transition: opacity 0.35s ease, transform 0.35s ease, filter 0.35s ease;
 }
 
-.bonus-lives .life.used {
+.bonus-lives .life-icon {
+  display: inline-block;
+  font-size: 1.5rem;
+  line-height: 1;
+  transition: opacity 0.35s ease, filter 0.35s ease;
+}
+
+.bonus-lives .life.used .life-icon {
   opacity: 0.22;
-  transform: scale(0.7) rotate(-15deg);
   filter: grayscale(1);
+}
+
+/* Past guess stamped over the greyed chicken. Sits in a sibling layer
+   (::after of .life, not .life-icon) so it isn't affected by the icon's
+   opacity/filter. */
+.bonus-lives .life[data-guess]::after {
+  content: attr(data-guess);
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--sans);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--sage-deep);
+  letter-spacing: -0.02em;
+  pointer-events: none;
 }
 
 .bonus-form {
@@ -964,6 +1008,9 @@ textarea.text-input:focus {
   justify-content: center;
   align-items: center;
 }
+
+.bonus-form[hidden],
+.bonus-lives[hidden] { display: none; }
 
 .bonus-input {
   width: 4rem;
@@ -978,16 +1025,14 @@ textarea.text-input:focus {
   color: var(--sage-deep);
   outline: none;
   transition: border-color 0.2s;
-  -moz-appearance: textfield;       /* hide spinners — keeps the input compact */
 }
-.bonus-input::-webkit-outer-spin-button,
-.bonus-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 
 .bonus-input:focus {
   border-color: var(--sage-deep);
 }
 
-.bonus-submit {
+.bonus-submit,
+.bonus-reveal {
   padding: 0.6rem 1.4rem;
   border: 0;
   border-radius: var(--radius-sm);
@@ -1002,7 +1047,15 @@ textarea.text-input:focus {
   transition: background 0.25s;
 }
 
-.bonus-submit:hover { background: var(--sage-deep); }
+.bonus-submit:hover,
+.bonus-reveal:hover { background: var(--sage-deep); }
+
+.bonus-reveal {
+  display: block;
+  margin: 1.25rem auto 0;
+}
+
+.bonus-reveal[hidden] { display: none; }
 
 .bonus-result {
   margin-top: 1.25rem;
@@ -1030,13 +1083,6 @@ textarea.text-input:focus {
   border: 0;
   border-radius: var(--radius-sm);
   box-shadow: 0 8px 22px -8px rgba(74, 107, 64, 0.3);
-}
-
-.bonus-caption {
-  font-size: 1rem;
-  color: var(--sage-deep);
-  font-weight: 500;
-  font-style: italic;
 }
 
 /* === CONFETTI BURST (correct-answer celebration) ================== */

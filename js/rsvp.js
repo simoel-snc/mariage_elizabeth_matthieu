@@ -202,7 +202,7 @@ async function submitForm() {
       name,
       present,
       reception: present && document.getElementById(`reception-${cardId}`).checked,
-      diner:     present && document.getElementById(`diner-${cardId}`).checked,
+      diner: present && document.getElementById(`diner-${cardId}`).checked,
       allergies: present ? card.querySelector('.allergies-input').value.trim() : '',
       language: currentLang,
       submittedAt: new Date().toISOString()
@@ -287,41 +287,48 @@ const BONUS_CORRECT_YT_SRC =
   `https://www.youtube-nocookie.com/embed/${BONUS_CORRECT_YT_ID}` +
   `?autoplay=1&mute=1&loop=1&playlist=${BONUS_CORRECT_YT_ID}` +
   `&modestbranding=1&rel=0&playsinline=1`;
+// Same video markup reused for the win flow and the post-loss reveal.
+const BONUS_VIDEO_HTML = `<iframe class="bonus-video-iframe"
+  src="${BONUS_CORRECT_YT_SRC}"
+  title="Bonus video"
+  allow="autoplay; encrypted-media; picture-in-picture"
+  allowfullscreen
+  referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
 
-// Wrong-attempt captions vary per attempt for personality. Index = which
-// wrong it is (0-based). Last entry doubles as the reveal caption — it
-// fires together with the 4th gif and gives the answer away.
-const BONUS_WRONG_CAPTIONS = [
-  { fr: 'Pas tout à fait…',                       nl: 'Niet helemaal…' },
-  { fr: 'Mais non, voyons !',                     nl: 'Maar nee, kom op!' },
-  { fr: 'Toujours pas…',                          nl: 'Nog steeds niet…' },
-  { fr: `Et hop, c'était ${BONUS_ANSWER} ! 🐣`,   nl: `En hop, het was ${BONUS_ANSWER}! 🐣` }
-];
-const BONUS_CORRECT_CAPTION = {
-  fr: `Bingo ! Toutes les ${BONUS_ANSWER} trouvées 🎉`,
-  nl: `Bingo! Alle ${BONUS_ANSWER} gevonden 🎉`
+// Outcome copy shown when the bonus ends — either by winning (celebration)
+// or by clicking "voir la bonne réponse" after 4 wrong guesses (consolation).
+// Same shape so they share the same renderer.
+const BONUS_CELEBRATION = {
+  titleFr: 'BRAVO, FÉLICITATIONS !',
+  titleNl: 'BRAVO, GEFELICITEERD !',
+  introFr: "Vous venez d'éviter de devoir nous faire en spectacle la chanson suivante le jour J !",
+  introNl: 'U hebt nipt vermeden een optreden van het onderstaande lied te moeten brengen op de grote dag !'
+};
+const BONUS_REVEAL = {
+  titleFr: 'QUELLE DÉCEPTION…',
+  titleNl: 'WAT EEN TELEURSTELLING...',
+  subtitleFr: `La bonne réponse était ${BONUS_ANSWER}`,
+  subtitleNl: `Het juiste antwoord was ${BONUS_ANSWER}`,
+  introFr: 'Pour vous rattraper, nous vous serions reconnaissant de nous préparer la chanson suivante en spectacle pour le jour J !',
+  introNl: 'Om het goed te maken, zal u zo vriendelijk zijn het onderstaande lied voor te bereiden, voor een optreden op de grote dag !'
 };
 
 // Submit-button label per attempt count (0 = first try). Last entry
 // reused if it ever goes higher (it shouldn't, since 4th wrong ends).
 const BONUS_BUTTON_LABELS = [
-  { fr: 'Je tente !',         nl: 'Ik probeer!' },
-  { fr: 'Encore !',           nl: 'Nog eens!' },
-  { fr: 'Toujours pas…',      nl: 'Nog steeds niet…' },
-  { fr: 'Dernière chance !',  nl: 'Laatste kans!' }
+  { fr: 'Je tente !', nl: 'Ik probeer!' },
+  { fr: 'Encore !', nl: 'Nog eens!' },
+  { fr: 'Toujours pas…', nl: 'Nog steeds niet…' },
+  { fr: 'Dernière chance !', nl: 'Laatste kans!' }
 ];
 
 const CONFETTI_COLORS = ['#6F9460', '#3F5F92', '#BED8A9', '#E8C766', '#A87D4F'];
 
 let bonusWrongCount = 0;
 
-function showBonusResult(mediaHtml, captionFr, captionNl) {
+function showBonusResult(mediaHtml) {
   const result = document.getElementById('bonusResult');
-  const text = currentLang === 'nl' ? captionNl : captionFr;
-  result.innerHTML = `
-    ${mediaHtml}
-    <p class="bonus-caption" data-fr="${captionFr}" data-nl="${captionNl}">${text}</p>
-  `;
+  result.innerHTML = mediaHtml;
   result.hidden = false;
 }
 
@@ -343,7 +350,7 @@ function updateBonusLives() {
     label.classList.add('urgent');
   } else {
     fr = `Tentatives restantes : ${remaining}`;
-    nl = `Pogingen over: ${remaining}`;
+    nl = `Resterende pogingen: ${remaining}`;
     label.classList.toggle('urgent', remaining === 0);
   }
   label.dataset.fr = fr;
@@ -390,39 +397,79 @@ function submitBonus(e) {
   const guess = Number(input.value);
   const form = document.getElementById('bonusForm');
 
-  // Reusable celebratory media — YouTube iframe (16:9 aspect handled in CSS).
-  const correctMedia = `<iframe class="bonus-video-iframe"
-    src="${BONUS_CORRECT_YT_SRC}"
-    title="Celebration"
-    allow="autoplay; encrypted-media; picture-in-picture"
-    allowfullscreen
-    referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
-
   if (guess === BONUS_ANSWER) {
-    showBonusResult(correctMedia, BONUS_CORRECT_CAPTION.fr, BONUS_CORRECT_CAPTION.nl);
     form.hidden = true;
+    showBonusOutcome(BONUS_CELEBRATION);
     fireConfetti();
     return false;
   }
 
-  // Wrong attempt — show next gif. Last gif AND reveal happen together.
+  // Wrong attempt — show next gif. After the 4th gif the form hides.
   const gif = BONUS_WRONG_GIFS[bonusWrongCount];
   const isLast = bonusWrongCount === BONUS_WRONG_GIFS.length - 1;
-  const caption = BONUS_WRONG_CAPTIONS[bonusWrongCount];
+  // Stamp the guess onto the chicken about to be marked used — guests
+  // can glance at the row and remember what they've already tried.
+  const lives = document.querySelectorAll('#bonusLives .life');
+  if (lives[bonusWrongCount]) lives[bonusWrongCount].dataset.guess = String(guess);
   bonusWrongCount++;
   updateBonusLives();
   showBonusResult(
-    `<img class="bonus-media" src="${gif}" alt="" onerror="this.style.display='none'">`,
-    caption.fr, caption.nl
+    `<img class="bonus-media" src="${gif}" alt="" onerror="this.style.display='none'">`
   );
 
   if (isLast) {
-    form.hidden = true;          // game over — reveal already shown via caption
+    form.hidden = true;
+    document.getElementById('bonusReveal').hidden = false;
   } else {
     escalateBonusButton();
-    input.select();
+    // Blur (not select) — on mobile, keeping focus pops the soft keyboard
+    // straight back up and hides the gif, which is the whole punchline.
+    input.blur();
   }
   return false;
+}
+
+function revealBonusAnswer() {
+  document.getElementById('bonusReveal').hidden = true;
+  showBonusOutcome(BONUS_REVEAL);
+}
+
+// Swap the thank-you card into an outcome framing — same DOM choreography
+// for the win (BONUS_CELEBRATION) and the post-loss reveal (BONUS_REVEAL).
+// Hides the chicken / "Merci !" / question / lives, mutates the h2 to the
+// outcome title, renders an optional subtitle + the intro paragraph + the
+// bonus video.
+function showBonusOutcome(copy) {
+  document.querySelector('.thank-illustration')?.setAttribute('hidden', '');
+  const h2 = document.querySelector('.thank-you h2');
+  if (h2) {
+    h2.dataset.fr = copy.titleFr;
+    h2.dataset.nl = copy.titleNl;
+    h2.textContent = currentLang === 'nl' ? copy.titleNl : copy.titleFr;
+  }
+  document.querySelector('.bonus-question')?.setAttribute('hidden', '');
+  document.getElementById('bonusLives')?.setAttribute('hidden', '');
+
+  const children = [];
+  if (copy.subtitleFr) {
+    const subtitle = document.createElement('p');
+    subtitle.className = 'bonus-outcome-subtitle';
+    subtitle.dataset.fr = copy.subtitleFr;
+    subtitle.dataset.nl = copy.subtitleNl;
+    subtitle.textContent = currentLang === 'nl' ? copy.subtitleNl : copy.subtitleFr;
+    children.push(subtitle);
+  }
+  const intro = document.createElement('p');
+  intro.className = 'bonus-outcome-intro';
+  intro.dataset.fr = copy.introFr;
+  intro.dataset.nl = copy.introNl;
+  intro.textContent = currentLang === 'nl' ? copy.introNl : copy.introFr;
+  children.push(intro);
+
+  const result = document.getElementById('bonusResult');
+  result.replaceChildren(...children);
+  result.insertAdjacentHTML('beforeend', BONUS_VIDEO_HTML);
+  result.hidden = false;
 }
 
 document.getElementById('inviteCode').value = localStorage.getItem('inviteCode') || '';
