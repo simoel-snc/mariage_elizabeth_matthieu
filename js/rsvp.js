@@ -416,6 +416,9 @@ function submitBonus(e) {
   showBonusResult(
     `<img class="bonus-media" src="${gif}" alt="" onerror="this.style.display='none'">`
   );
+  // Pull the new gif into view — on mobile especially, the user is usually
+  // looking at the form below and would miss the reaction otherwise.
+  document.getElementById('bonusResult').scrollIntoView({ behavior: 'smooth', block: 'center' });
 
   if (isLast) {
     form.hidden = true;
