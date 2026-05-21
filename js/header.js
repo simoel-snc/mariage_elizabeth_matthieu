@@ -25,13 +25,6 @@ const langToggleHTML = `
 `;
 document.body.insertAdjacentHTML('afterbegin', langToggleHTML);
 
-const pageTitleHTML = PAGE.pages
-  ? (() => {
-      const p = PAGE.pages[currentPage];
-      return `<p class="page-title" data-fr="${p.fr}" data-nl="${p.nl}">${p[currentLang]}</p>`;
-    })()
-  : '';
-
 // Build nav from PAGE.pages — short labels keep the nav row tight when
 // the page-title itself is long (e.g. "Nous nous marions" → "RSVP").
 const navHTML = PAGE.nav && PAGE.pages
@@ -55,7 +48,6 @@ const headerHTML = `
       <source srcset="img/assets/date-29-aout.webp" type="image/webp">
       <img class="wordmark-date" src="img/assets/date-29-aout.png" alt="29 août 2026" width="405" height="104">
     </picture>
-    ${pageTitleHTML}
     ${navHTML}
   </header>
 `;
@@ -65,21 +57,13 @@ if (!PAGE.hideHeader) {
   host?.insertAdjacentHTML('beforebegin', headerHTML);
 }
 
-// Show the named page section, refresh the page-title, and sync the nav.
-// Used by both navigateTo (click) and the popstate handler (back/forward).
+// Show the named page section and sync the nav. Used by both navigateTo
+// (click) and the popstate handler (back/forward).
 function applyPage(page) {
   currentPage = page;
 
   document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
   document.getElementById(`page-${page}`)?.classList.add('active');
-
-  const titleEl = document.querySelector('.page-title');
-  const meta = PAGE.pages?.[page];
-  if (titleEl && meta) {
-    titleEl.dataset.fr = meta.fr;
-    titleEl.dataset.nl = meta.nl;
-    titleEl.textContent = meta[currentLang];
-  }
 
   document.querySelectorAll('.nav a[data-page]').forEach(a => {
     a.classList.toggle('active', a.dataset.page === page);
@@ -113,9 +97,19 @@ function setLang(lang) {
     el.textContent = el.dataset[lang];
   });
 
-  const phKey = 'ph' + lang.charAt(0).toUpperCase() + lang.slice(1);
+  const langSuffix = lang.charAt(0).toUpperCase() + lang.slice(1);
+
+  const phKey = 'ph' + langSuffix;
   document.querySelectorAll('[data-ph-fr]').forEach(el => {
     el.placeholder = el.dataset[phKey];
+  });
+
+  // Language-aware hrefs — e.g. <a data-href-fr="..." data-href-nl="...">.
+  // Skip elements that use data-href-* for app-variants (Google/Apple/Waze)
+  // by only matching the lang-prefixed ones.
+  const hrefKey = 'href' + langSuffix;
+  document.querySelectorAll('[data-href-fr]').forEach(el => {
+    if (el.dataset[hrefKey]) el.href = el.dataset[hrefKey];
   });
 
   if (typeof updateGuestLabels === 'function') updateGuestLabels();

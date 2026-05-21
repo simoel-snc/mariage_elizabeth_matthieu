@@ -120,3 +120,15 @@ python scripts/convert_user_crops.py
 
 Then commit the updated `img/assets/`. To add a new illustration, append
 a `(source, slug, max_long_edge)` row to `ASSETS` first.
+
+## Regenerating the favicon
+
+`img/favicon.png` (32×32, browser tab) and `img/apple-touch-icon.png`
+(180×180, iOS home-screen) are derived from `img/single_chick.png`. If
+you swap the source PNG, re-run:
+
+```bash
+python scripts/generate-favicon.py
+```
+
+Both outputs are committed.

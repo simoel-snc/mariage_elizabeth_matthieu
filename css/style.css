@@ -22,9 +22,9 @@
 
   --cobalt:     #3F5F92;   /* invitation calligraphy blue */
 
-  --cream:      #FAF6EE;   /* page bg */
-  --paper:      #FBF7EE;   /* card bg */
-  --paper-edge: #EFE6D2;
+  --cream:      #DCE7D3;   /* page bg — soft sage green */
+  --paper:      #E8F1DD;   /* card bg — paler sage green */
+  --paper-edge: #CCD8BD;
   --ink:        #2D3A28;
   --ink-soft:   #6B7560;
 
@@ -137,16 +137,6 @@ body::after {
   .header .wordmark-date { width: min(220px, 32vw); }
 }
 
-.header .page-title {
-  font-family: var(--sans);
-  font-weight: 400;
-  font-size: clamp(1rem, 2.6vw, 1.2rem);
-  color: var(--sage-deep);
-  letter-spacing: 0.32em;
-  text-transform: uppercase;
-  margin-top: 2.25rem;
-  font-style: normal;
-}
 
 /* === LANGUAGE TOGGLE =============================================== */
 
@@ -264,20 +254,37 @@ body::after {
 .info-section:nth-of-type(3) { animation-delay: 0.26s; }
 .info-section:nth-of-type(4) { animation-delay: 0.34s; }
 
-/* Section icon (small scene illustration shown inside venue/dress cards).
+/* Section icon (illustration shown inside venue/dress cards).
    Sized by height so icons of varying widths feel balanced.
-   Add .lg for richer scenes (vanity, chicken-dance) that benefit from more detail. */
+   Add .lg for richer scenes (vanity, chicken-dance). */
 .section-icon {
   display: block;
   width: auto;
-  height: 90px;
+  height: 130px;
   max-width: 60%;
-  margin: 0 auto 0.7rem;
+  margin: 0 auto 0.85rem;
   opacity: 0.95;
 }
 
 .section-icon.lg {
-  height: 130px;
+  height: 170px;
+}
+
+/* Three-icon row for multi-event venues (Le Chenoy: champagne → plate
+   → dancing chicken). Smaller per-icon so the trio stays balanced. */
+.venue-icons {
+  display: flex;
+  gap: 1rem;
+  align-items: end;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  flex-wrap: wrap;
+}
+
+.venue-icons .section-icon {
+  height: 90px;
+  margin: 0;
+  max-width: none;
 }
 
 /* === INFO CARDS =================================================== */
@@ -302,9 +309,8 @@ body::after {
 }
 
 .info-card h3 {
-  font-family: var(--sans);
-  font-weight: 600;
-  font-size: clamp(1.5rem, 4vw, 1.75rem);
+  font-weight: 500;
+  font-size: clamp(1.2rem, 3vw, 1.4rem);
   color: var(--sage-deep);
   margin-bottom: 0.5rem;
   letter-spacing: 0.01em;
@@ -369,24 +375,36 @@ body::after {
   transform: translateY(-1px);
 }
 
-.info-link .qr {
-  display: none;
-}
+.info-link .qr { display: none; }
 
+/* Floating QR popover on desktop. Appears above the button on hover/focus
+   at a size that's actually scannable from a phone camera. Hidden by
+   default so the button itself stays compact. */
 @media (hover: hover) and (pointer: fine) {
   .info-link .qr {
     display: block;
-    width: 36px;
-    height: 36px;
-    margin-left: 0.85rem;
-    border-radius: 4px;
+    position: absolute;
+    bottom: calc(100% + 0.6rem);
+    left: 50%;
+    transform: translateX(-50%) scale(0.9);
+    transform-origin: bottom center;
+    width: 150px;
+    height: 150px;
+    padding: 6px;
+    margin: 0;
     background: var(--paper);
-    padding: 3px;
-    transition: background 0.25s;
+    border: 1px solid var(--paper-edge);
+    border-radius: 8px;
+    box-shadow: 0 10px 28px -6px rgba(74, 107, 64, 0.35);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 10;
   }
-  /* Keep the QR readable when the button background turns sage on hover */
-  .info-link:hover .qr {
-    background: var(--cream);
+  .info-link:hover .qr,
+  .info-link:focus-visible .qr {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
   }
 }
 
@@ -407,9 +425,7 @@ body::after {
   justify-content: center;
   align-items: baseline;
   margin: 0 auto 1.5rem;
-  padding-bottom: 1.25rem;
   max-width: 320px;
-  border-bottom: 1px solid rgba(189, 216, 169, 0.4);
 }
 
 .venue-time-row {
@@ -464,13 +480,13 @@ body::after {
   margin-bottom: 0.75rem;
 }
 
-.dress-code-card h3 {
+.dress-code-style {
   font-family: var(--sans);
   font-weight: 500;
-  font-size: 1.4rem;
+  font-size: clamp(1.2rem, 3vw, 1.4rem);
   color: var(--sage-deep);
-  margin-bottom: 1rem;
-  letter-spacing: 0.04em;
+  margin-bottom: 0.6rem;
+  letter-spacing: 0.01em;
 }
 
 .dress-code-card p {
@@ -885,6 +901,174 @@ textarea.text-input:focus {
   box-shadow: 0 7px 18px -4px rgba(74, 107, 64, 0.4);
 }
 
+/* === THANK-YOU EXTRAS — update note + bonus mini-game ============== */
+
+/* Bonus mini-game — sits flush under "Merci !" with no card frame; it
+   reads as a continuation of the thank-you, not a separate section. */
+.bonus {
+  margin-top: 1.5rem;
+}
+
+.bonus-question {
+  font-size: 1.05rem;
+  font-style: italic;
+  color: var(--ink);
+  line-height: 1.55;
+  max-width: 420px;
+  margin: 0 auto 1.25rem;
+}
+
+/* Tries counter: text label on top, chicken row below. JS keeps both
+   in sync — the label decrements numerically while the chickens visibly
+   wither (so the meaning of the chickens is unambiguous). */
+.bonus-lives {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 1.25rem;
+}
+
+.bonus-lives-label {
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: 0.78rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  transition: color 0.25s ease;
+}
+
+.bonus-lives-label.urgent {
+  color: var(--error);
+}
+
+.bonus-lives .lives-row { line-height: 1; }
+
+.bonus-lives .life {
+  display: inline-block;
+  font-size: 1.5rem;
+  margin: 0 0.18rem;
+  transition: opacity 0.35s ease, transform 0.35s ease, filter 0.35s ease;
+}
+
+.bonus-lives .life.used {
+  opacity: 0.22;
+  transform: scale(0.7) rotate(-15deg);
+  filter: grayscale(1);
+}
+
+.bonus-form {
+  display: flex;
+  gap: 0.6rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.bonus-input {
+  width: 4rem;
+  padding: 0.55rem 0.4rem;
+  border: 1.5px solid var(--sage-soft);
+  border-radius: var(--radius-sm);
+  background: var(--cream);
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 1.1rem;
+  text-align: center;
+  color: var(--sage-deep);
+  outline: none;
+  transition: border-color 0.2s;
+  -moz-appearance: textfield;       /* hide spinners — keeps the input compact */
+}
+.bonus-input::-webkit-outer-spin-button,
+.bonus-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+.bonus-input:focus {
+  border-color: var(--sage-deep);
+}
+
+.bonus-submit {
+  padding: 0.6rem 1.4rem;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: var(--sage);
+  color: var(--cream);
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: 0.82rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.25s;
+}
+
+.bonus-submit:hover { background: var(--sage-deep); }
+
+.bonus-result {
+  margin-top: 1.25rem;
+  animation: fadeUp 0.5s ease-out;
+}
+
+.bonus-media {
+  display: block;
+  max-width: 100%;
+  width: 360px;
+  height: auto;
+  margin: 0 auto 0.9rem;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 8px 22px -8px rgba(74, 107, 64, 0.3);
+}
+
+/* YouTube iframe for the success state. Keeps the same visual frame
+   as .bonus-media (width/shadow/radius) but enforces 16:9. */
+.bonus-video-iframe {
+  display: block;
+  width: 100%;
+  max-width: 480px;
+  aspect-ratio: 16 / 9;
+  margin: 0 auto 0.9rem;
+  border: 0;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 8px 22px -8px rgba(74, 107, 64, 0.3);
+}
+
+.bonus-caption {
+  font-size: 1rem;
+  color: var(--sage-deep);
+  font-weight: 500;
+  font-style: italic;
+}
+
+/* === CONFETTI BURST (correct-answer celebration) ================== */
+
+.confetti-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  overflow: hidden;
+}
+
+.confetti {
+  position: absolute;
+  top: 35%;
+  width: 10px;
+  height: 14px;
+  border-radius: 1px;
+  opacity: 0;
+  animation: confetti-burst forwards cubic-bezier(0.15, 0.7, 0.5, 1);
+}
+
+@keyframes confetti-burst {
+  0%   { transform: translate(0, 0) rotate(0deg) scale(0); opacity: 1; }
+  15%  { opacity: 1; }
+  100% { transform: translate(var(--dx), var(--dy)) rotate(var(--r)) scale(1); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .confetti { display: none; }
+}
+
 /* === GATE SCREEN ================================================== */
 
 .gate-screen {
@@ -1212,12 +1396,21 @@ textarea.text-input:focus {
 }
 
 .deco-chicken-fence {
-  /* perched on a fence, peeking from the right above the RSVP form */
+  /* perched on a fence — sits inside the top-right corner of the
+     guest card. Fixed top (not %) so it stays put when conditional
+     form fields show/hide and the container resizes. */
   width: 88px;
-  right: -0.5rem;
-  top: 4%;
+  right: 2rem;
+  top: 1rem;
   transform: rotate(-3deg);
   opacity: 0.88;
+}
+
+/* Hide the fence chicken once the form is submitted — the thank-you
+   card has its own focus and the chicken would just sit awkwardly
+   above it. */
+#page-rsvp:has(#thankYou.visible) .deco-chicken-fence {
+  display: none;
 }
 
 /* === ANIMATIONS =================================================== */

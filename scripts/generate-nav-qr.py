@@ -28,12 +28,13 @@ QRS = {
         "https://www.google.com/maps/place//"
         "data=!4m2!3m1!1s0x47c3d58f5ba09869:0xe15385fa60ff5af3"
     ),
+    # Origin omitted (// after dir/) so navigation starts from the
+    # scanner's current location; first stop is the waypoint, second
+    # is the parking destination.
     "qr-parking.png": (
         "https://www.google.com/maps/dir/"
-        "%C3%89glise+Saint-%C3%89tienne+de+Court-Saint-%C3%89tienne,"
-        "+Rue+du+Village+1,+1490+Court-Saint-%C3%89tienne/"
-        "50.6284462,4.5923186/"
-        "50.6168451,4.5867892/"
+        "/50.6284462,4.5923186"
+        "/50.6168451,4.5867892/"
     ),
 }
 

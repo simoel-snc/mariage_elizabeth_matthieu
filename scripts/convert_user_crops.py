@@ -23,6 +23,7 @@ ASSETS = [
     # Section icons
     ("table.png",                        "scene-vanity",              700),
     ("table_icon.png",                   "scene-plate",               400),
+    ("champagne_glasses_reception.png",  "scene-champagne",           500),
     ("church.png",                       "scene-church",              450),
     ("dancing_chicken_evening.png",      "scene-chicken-dance",       550),
 

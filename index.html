@@ -9,8 +9,8 @@
     script-src 'self' 'unsafe-inline';
     style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
     font-src https://fonts.gstatic.com;
-    img-src 'self' data:;
-    frame-src https://www.google.com https://maps.google.com;
+    img-src 'self' data: https://kaamelott-gifboard.fr;
+    frame-src https://www.google.com https://maps.google.com https://www.youtube-nocookie.com;
     connect-src 'self' https://script.google.com https://script.googleusercontent.com;
     form-action 'self';
     base-uri 'self';
@@ -22,6 +22,8 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap"
     rel="stylesheet">
+  <link rel="icon" href="img/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
   <link rel="preload" as="image" href="img/assets/title-elizabeth-matthieu.webp">
   <link rel="preload" as="image" href="img/assets/date-29-aout.webp">
   <link rel="preload" as="image" href="img/assets/pear-trees-left.webp">
@@ -34,9 +36,9 @@
   <script>globalThis.PAGE_CONFIG = {
       nav: true,
       pages: {
-        infos:     { fr: 'Programme',         nl: 'Programma',          shortFr: 'Programme',  shortNl: 'Programma' },
-        dresscode: { fr: 'Dress Code',        nl: 'Kledingcode',        shortFr: 'Dress Code', shortNl: 'Kledingcode' },
-        rsvp:      { fr: 'Nous nous marions', nl: 'Wij gaan trouwen',   shortFr: 'RSVP',       shortNl: 'RSVP' }
+        infos: { fr: 'Programme', nl: 'Programma', shortFr: 'Programme', shortNl: 'Programma' },
+        dresscode: { fr: 'Dress Code', nl: 'Dress Code', shortFr: 'Dress Code', shortNl: 'Dress Code' },
+        rsvp: { fr: 'Nous nous marions', nl: 'Wij gaan trouwen', shortFr: 'RSVP', shortNl: 'RSVP' }
       }
     };</script>
 
@@ -56,7 +58,8 @@
           <div class="venue-times">
             <div class="venue-time-row">
               <span class="venue-time">15:00</span>
-              <span class="venue-event" data-fr="Cérémonie religieuse" data-nl="Kerkelijke ceremonie">Cérémonie religieuse</span>
+              <span class="venue-event" data-fr="Cérémonie religieuse" data-nl="Kerkelijke ceremonie">Cérémonie
+                religieuse</span>
             </div>
           </div>
           <h3 data-fr="Église Saint-Étienne de Court-Saint-Étienne" data-nl="Sint-Stefanuskerk van Court-Saint-Étienne">
@@ -80,15 +83,25 @@
         </div>
       </section>
 
-      <hr class="divider gingham">
-
       <!-- VENUE 2 — LE CHENOY (réception + dîner + soirée) -->
       <section class="info-section">
         <div class="info-card venue-card">
-          <picture>
-            <source srcset="img/assets/scene-plate.webp" type="image/webp">
-            <img class="section-icon" src="img/assets/scene-plate.png" alt="" width="138" height="115" loading="lazy">
-          </picture>
+          <div class="venue-icons" aria-hidden="true">
+            <picture>
+              <source srcset="img/assets/scene-champagne.webp" type="image/webp">
+              <img class="section-icon" src="img/assets/scene-champagne.png" alt="" width="113" height="199"
+                loading="lazy">
+            </picture>
+            <picture>
+              <source srcset="img/assets/scene-plate.webp" type="image/webp">
+              <img class="section-icon" src="img/assets/scene-plate.png" alt="" width="138" height="115" loading="lazy">
+            </picture>
+            <picture>
+              <source srcset="img/assets/scene-chicken-dance.webp" type="image/webp">
+              <img class="section-icon" src="img/assets/scene-chicken-dance.png" alt="" width="240" height="259"
+                loading="lazy">
+            </picture>
+          </div>
           <div class="venue-times">
             <div class="venue-time-row">
               <span class="venue-time">17:00</span>
@@ -104,7 +117,6 @@
             </div>
           </div>
           <h3>Le Chenoy</h3>
-          <p class="info-address">Rue du Chenoy 1, 1490 Court-Saint-Étienne</p>
           <p class="info-note" data-fr="Accès par la Rue Vital Casse" data-nl="Toegang via Rue Vital Casse">
             Accès par la Rue Vital Casse</p>
           <div class="info-map">
@@ -114,11 +126,11 @@
               referrerpolicy="no-referrer-when-downgrade">
             </iframe>
           </div>
-          <a href="https://www.google.com/maps/dir/%C3%89glise+Saint-%C3%89tienne+de+Court-Saint-%C3%89tienne,+Rue+du+Village+1,+1490+Court-Saint-%C3%89tienne/50.6284462,4.5923186/50.6168451,4.5867892/"
-            class="info-link" target="_blank" rel="noopener"
-            data-href-google="https://www.google.com/maps/dir/%C3%89glise+Saint-%C3%89tienne+de+Court-Saint-%C3%89tienne,+Rue+du+Village+1,+1490+Court-Saint-%C3%89tienne/50.6284462,4.5923186/50.6168451,4.5867892/"
-            data-href-apple="https://maps.apple.com/?daddr=50.6168451,4.5867892&dirflg=d"
-            data-href-waze="https://waze.com/ul?ll=50.6168451,4.5867892&navigate=yes">
+          <a href="https://www.google.com/maps/dir//50.6284462,4.5923186/50.6168451,4.5867892/" class="info-link"
+            target="_blank" rel="noopener"
+            data-href-google="https://www.google.com/maps/dir//50.6284462,4.5923186/50.6168451,4.5867892/"
+            data-href-apple="https://maps.apple.com/?daddr=50.6284462,4.5923186+to:50.6168451,4.5867892&dirflg=d"
+            data-href-waze="https://waze.com/ul?ll=50.6168451,4.5867892&via=50.6284462,4.5923186&navigate=yes">
             <span data-fr="Naviguer vers le parking" data-nl="Navigeer naar de parking">Naviguer vers le parking</span>
             <img class="qr" src="img/qr-parking.png" alt="">
           </a>
@@ -150,13 +162,14 @@
         <div class="info-card dress-code-card">
           <picture>
             <source srcset="img/assets/scene-vanity.webp" type="image/webp">
-            <img class="section-icon lg" src="img/assets/scene-vanity.png" alt="" width="497" height="455" loading="lazy">
+            <img class="section-icon lg" src="img/assets/scene-vanity.png" alt="" width="497" height="455"
+              loading="lazy">
           </picture>
-          <h3 data-fr="Dress Code" data-nl="Kledingcode">Dress Code</h3>
-          <p data-fr="Nous voulons que vous vous sentiez à l'aise. Faites un effort pour être à votre avantage, mais pas besoin de louer ou d'acheter une tenue spéciale. L'essentiel est que vous soyez vous-mêmes !"
-            data-nl="We willen dat u zich op uw gemak voelt. Doe uw best om er op uw best uit te zien, maar het is niet nodig om speciale kleding te huren of te kopen. Het belangrijkste is dat u uzelf bent!">
-            Nous voulons que vous vous sentiez à l'aise. Faites un effort pour être à votre avantage, mais pas besoin de
-            louer ou d'acheter une tenue spéciale. L'essentiel est que vous soyez vous-mêmes !
+          <p class="dress-code-style" data-fr="Jacquette, costume ou veston" data-nl="Jacquette, costume ou veston">
+            Jacquette, costume ou veston
+          </p>
+          <p data-fr="Faites-vous beau et sentez-vous bien !" data-nl="Voel je goed in je feestelijke outfit !">
+            Faites-vous beau et sentez-vous bien !
           </p>
 
           <!-- Sitting hen with chick — peeking from the bottom-right corner of the card -->
@@ -173,15 +186,6 @@
 
     <!-- ==================== RSVP PAGE ==================== -->
     <div class="page" id="page-rsvp">
-
-      <!-- Intro -->
-      <div class="intro">
-        <p data-fr="Nous serions ravis de vous compter parmi nous pour célébrer notre union. Veuillez remplir le formulaire ci-dessous pour chaque invité."
-          data-nl="Wij zouden het geweldig vinden om u erbij te hebben om ons huwelijk te vieren. Gelieve onderstaand formulier in te vullen voor elke gast.">
-          Nous serions ravis de vous compter parmi nous pour célébrer notre union. Veuillez remplir le formulaire
-          ci-dessous pour chaque invité.
-        </p>
-      </div>
 
       <!-- Form -->
       <form id="rsvpForm" class="form-section" onsubmit="return false;" autocomplete="off">
@@ -215,19 +219,39 @@
       <div class="thank-you" id="thankYou">
         <picture>
           <source srcset="img/assets/scene-chicken-dance.webp" type="image/webp">
-          <img class="thank-illustration" src="img/assets/scene-chicken-dance.png" alt=""
-            width="240" height="259">
+          <img class="thank-illustration" src="img/assets/scene-chicken-dance.png" alt="" width="240" height="259">
         </picture>
         <h2 data-fr="Merci !" data-nl="Bedankt!">Merci !</h2>
-        <p data-fr="Votre réponse a bien été enregistrée. Nous avons hâte de partager ce moment avec vous !"
-          data-nl="Uw antwoord is geregistreerd. We kijken ernaar uit om dit moment met u te delen!">
-          Votre réponse a bien été enregistrée. Nous avons hâte de partager ce moment avec vous !
-        </p>
-        <hr class="divider gingham">
-        <a href="#infos" class="info-page-btn" onclick="navigateTo('infos');return false;"
-          data-fr="Voir les infos pratiques" data-nl="Praktische info bekijken">
-          Voir les infos pratiques
-        </a>
+
+        <!-- Bonus mini-game: count the chickens hidden in the printed invitation -->
+        <section class="bonus" id="bonus">
+          <p class="bonus-question"
+            data-fr="Allez, à votre tour : combien de poules et poussins se cachent dans l'invitation ?"
+            data-nl="Aan u nu: hoeveel kippen en kuikens zijn verborgen in de uitnodiging?">
+            Allez, à votre tour : combien de poules et poussins se cachent dans l'invitation ?
+          </p>
+
+          <!-- Tries counter — text label + chicken row. JS keeps both in sync. -->
+          <div class="bonus-lives" id="bonusLives" aria-hidden="true">
+            <span class="bonus-lives-label" id="bonusLivesLabel"
+              data-fr="Tentatives restantes : 4" data-nl="Pogingen over: 4">Tentatives restantes : 4</span>
+            <span class="lives-row">
+              <span class="life">🐔</span>
+              <span class="life">🐔</span>
+              <span class="life">🐔</span>
+              <span class="life">🐔</span>
+            </span>
+          </div>
+
+          <form class="bonus-form" id="bonusForm" onsubmit="return submitBonus(event)">
+            <input type="number" min="0" max="99" inputmode="numeric" class="bonus-input" id="bonusInput" required
+              aria-label="Nombre de poules">
+            <button type="submit" class="bonus-submit" data-fr="Je tente !"
+              data-nl="Ik probeer!">Je tente !</button>
+          </form>
+
+          <div class="bonus-result" id="bonusResult" hidden></div>
+        </section>
       </div>
 
       <!-- Hidden chick peeking from the bottom-left, under the submit button -->
@@ -251,7 +275,10 @@
   </div>
 
   <footer class="footer" style="display:none">
-    <a class="illustrator-credit" href="https://www.cathboelillustrations.com/" target="_blank" rel="noopener noreferrer">
+    <a class="illustrator-credit" href="https://www.cathboelillustrations.com/fr"
+      data-href-fr="https://www.cathboelillustrations.com/fr"
+      data-href-nl="https://www.cathboelillustrations.com/"
+      target="_blank" rel="noopener noreferrer">
       Catherine Boël Illustrations
     </a>
   </footer>

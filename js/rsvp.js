@@ -4,16 +4,14 @@ const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzYmqNn8PU0vywr
 const T = {
   fr: {
     guestN: 'Invité',
-    name: 'Nom complet',
     namePlaceholder: 'Prénom et nom',
-    presence: 'Présence',
     yes: 'Sera présent(e) ✓',
     no: 'Ne pourra pas venir ✗',
-    confirm: 'Merci de confirmer votre présence à :',
+    confirm: 'Présent(e) pour :',
     reception: 'Réception',
     diner: 'Dîner',
-    allergies: 'Allergies ou régime alimentaire',
-    allergiesPlaceholder: 'Ex: végétarien, sans gluten, allergie aux noix…',
+    allergies: 'Allergies',
+    allergiesPlaceholder: 'Allergies alimentaires, grossesse, intolérances…',
     addGuest: 'Ajouter un invité',
     submit: 'Envoyer la réponse',
     sending: 'Envoi en cours…',
@@ -25,16 +23,14 @@ const T = {
   },
   nl: {
     guestN: 'Gast',
-    name: 'Volledige naam',
     namePlaceholder: 'Voornaam en achternaam',
-    presence: 'Aanwezigheid',
     yes: 'Zal aanwezig zijn ✓',
     no: 'Kan niet komen ✗',
-    confirm: 'Gelieve uw aanwezigheid te bevestigen bij:',
+    confirm: 'Aanwezig voor :',
     reception: 'Receptie',
     diner: 'Diner',
-    allergies: 'Allergieën of dieet',
-    allergiesPlaceholder: 'Bv: vegetarisch, glutenvrij, notenallergie…',
+    allergies: 'Allergieën',
+    allergiesPlaceholder: 'Voedselallergieën, zwangerschap, intoleranties…',
     addGuest: 'Gast toevoegen',
     submit: 'Antwoord versturen',
     sending: 'Bezig met verzenden…',
@@ -59,8 +55,6 @@ function t(key) {
 function updateGuestLabels() {
   document.querySelectorAll('.guest-card').forEach((card, idx) => {
     card.querySelector('.guest-number').textContent = `${t('guestN')} ${idx + 1}`;
-    card.querySelector('.field-label-name').textContent = t('name');
-    card.querySelector('.field-label-presence').textContent = t('presence');
     card.querySelector('.label-yes').textContent = t('yes');
     card.querySelector('.label-no').textContent = t('no');
     card.querySelector('.field-label-confirm').textContent = t('confirm');
@@ -87,16 +81,12 @@ function addGuest() {
     ${id > 1 ? `<button type="button" class="remove-guest" onclick="removeGuest(${id})" title="Remove">×</button>` : ''}
   </div>
 
-  <!-- Name -->
   <div class="field-group">
-    <label class="field-label field-label-name">${t('name')}</label>
     <input type="text" class="text-input name-input" maxlength="100" placeholder="${t('namePlaceholder')}"
            data-ph-fr="${T.fr.namePlaceholder}" data-ph-nl="${T.nl.namePlaceholder}">
   </div>
 
-  <!-- Presence -->
   <div class="field-group">
-    <label class="field-label field-label-presence">${t('presence')}</label>
     <div class="presence-toggle">
       <div class="presence-option">
         <input type="radio" name="presence-${id}" id="present-yes-${id}" value="yes" onchange="toggleConditional(${id})">
@@ -188,7 +178,7 @@ async function submitForm() {
     || Date.now() - formLoadedAt < MIN_FORM_DURATION_MS;
   if (isBot) {
     document.querySelector('.form-section').style.display = 'none';
-    document.querySelector('.intro').style.display = 'none';
+    document.querySelector('.intro')?.style.setProperty('display', 'none');
     document.getElementById('thankYou').classList.add('visible');
     return;
   }
@@ -254,7 +244,7 @@ async function submitForm() {
 
     // Show success
     document.querySelector('.form-section').style.display = 'none';
-    document.querySelector('.intro').style.display = 'none';
+    document.querySelector('.intro')?.style.setProperty('display', 'none');
     document.getElementById('thankYou').classList.add('visible');
 
   } catch (err) {
@@ -273,6 +263,176 @@ async function submitForm() {
 const formLoadedAt = Date.now();
 const MIN_FORM_DURATION_MS = 1500;
 
+// Bonus mini-game shown on the thank-you screen. Frontend-only by design.
+//
+// Flow:
+//   - Correct → caption + celebratory media + confetti, form hides
+//   - Wrong attempts 1-3 → next Kaamelott reaction gif, life fades,
+//     button text escalates, form stays open
+//   - Wrong attempt 4 (last gif) → that gif + reveal caption together,
+//     form hides. Total clicks max = 4, no dead "5th click to reveal".
+const BONUS_ANSWER = 11;
+const BONUS_WRONG_GIFS = [
+  'https://kaamelott-gifboard.fr/gifs/pas-des-fleches-hein.gif',
+  'https://kaamelott-gifboard.fr/gifs/mais-absolument-pas.gif',
+  'https://kaamelott-gifboard.fr/gifs/non.gif',
+  'https://kaamelott-gifboard.fr/gifs/debile-toujours-inattendu.gif'
+];
+// Celebratory clip — YouTube embed via the privacy-enhanced nocookie
+// domain. To trim to a specific window, append &start=NN&end=NN to
+// the src URL (seconds). Loop quirk: YouTube requires both loop=1 AND
+// playlist=<same id> for autoplay-loop to work.
+const BONUS_CORRECT_YT_ID = 'Hqfsukw9S6Y';
+const BONUS_CORRECT_YT_SRC =
+  `https://www.youtube-nocookie.com/embed/${BONUS_CORRECT_YT_ID}` +
+  `?autoplay=1&mute=1&loop=1&playlist=${BONUS_CORRECT_YT_ID}` +
+  `&modestbranding=1&rel=0&playsinline=1`;
+
+// Wrong-attempt captions vary per attempt for personality. Index = which
+// wrong it is (0-based). Last entry doubles as the reveal caption — it
+// fires together with the 4th gif and gives the answer away.
+const BONUS_WRONG_CAPTIONS = [
+  { fr: 'Pas tout à fait…',                       nl: 'Niet helemaal…' },
+  { fr: 'Mais non, voyons !',                     nl: 'Maar nee, kom op!' },
+  { fr: 'Toujours pas…',                          nl: 'Nog steeds niet…' },
+  { fr: `Et hop, c'était ${BONUS_ANSWER} ! 🐣`,   nl: `En hop, het was ${BONUS_ANSWER}! 🐣` }
+];
+const BONUS_CORRECT_CAPTION = {
+  fr: `Bingo ! Toutes les ${BONUS_ANSWER} trouvées 🎉`,
+  nl: `Bingo! Alle ${BONUS_ANSWER} gevonden 🎉`
+};
+
+// Submit-button label per attempt count (0 = first try). Last entry
+// reused if it ever goes higher (it shouldn't, since 4th wrong ends).
+const BONUS_BUTTON_LABELS = [
+  { fr: 'Je tente !',         nl: 'Ik probeer!' },
+  { fr: 'Encore !',           nl: 'Nog eens!' },
+  { fr: 'Toujours pas…',      nl: 'Nog steeds niet…' },
+  { fr: 'Dernière chance !',  nl: 'Laatste kans!' }
+];
+
+const CONFETTI_COLORS = ['#6F9460', '#3F5F92', '#BED8A9', '#E8C766', '#A87D4F'];
+
+let bonusWrongCount = 0;
+
+function showBonusResult(mediaHtml, captionFr, captionNl) {
+  const result = document.getElementById('bonusResult');
+  const text = currentLang === 'nl' ? captionNl : captionFr;
+  result.innerHTML = `
+    ${mediaHtml}
+    <p class="bonus-caption" data-fr="${captionFr}" data-nl="${captionNl}">${text}</p>
+  `;
+  result.hidden = false;
+}
+
+// Updates BOTH the text label and the chicken row so the meaning of the
+// chickens is unambiguous (they represent the number on the label).
+function updateBonusLives() {
+  document.querySelectorAll('#bonusLives .life').forEach((el, i) => {
+    el.classList.toggle('used', i < bonusWrongCount);
+  });
+
+  const label = document.getElementById('bonusLivesLabel');
+  if (!label) return;
+  const remaining = Math.max(0, BONUS_WRONG_GIFS.length - bonusWrongCount);
+  let fr;
+  let nl;
+  if (remaining === 1) {
+    fr = 'Dernière tentative !';
+    nl = 'Laatste poging!';
+    label.classList.add('urgent');
+  } else {
+    fr = `Tentatives restantes : ${remaining}`;
+    nl = `Pogingen over: ${remaining}`;
+    label.classList.toggle('urgent', remaining === 0);
+  }
+  label.dataset.fr = fr;
+  label.dataset.nl = nl;
+  label.textContent = currentLang === 'nl' ? nl : fr;
+}
+
+function escalateBonusButton() {
+  const btn = document.querySelector('.bonus-submit');
+  if (!btn) return;
+  const idx = Math.min(bonusWrongCount, BONUS_BUTTON_LABELS.length - 1);
+  const { fr, nl } = BONUS_BUTTON_LABELS[idx];
+  btn.dataset.fr = fr;
+  btn.dataset.nl = nl;
+  btn.textContent = currentLang === 'nl' ? nl : fr;
+}
+
+// Center-burst confetti. Each particle gets random direction/rotation/
+// duration via inline custom properties consumed by the CSS keyframes.
+function fireConfetti() {
+  const container = document.createElement('div');
+  container.className = 'confetti-container';
+  document.body.appendChild(container);
+
+  for (let i = 0; i < 90; i++) {
+    const p = document.createElement('div');
+    p.className = 'confetti';
+    p.style.background = CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)];
+    p.style.left = (28 + Math.random() * 44) + '%';
+    p.style.setProperty('--dx', (Math.random() - 0.5) * 900 + 'px');
+    p.style.setProperty('--dy', (220 + Math.random() * 500) + 'px');
+    p.style.setProperty('--r', (Math.random() * 720 - 360) + 'deg');
+    p.style.animationDuration = (1.8 + Math.random() * 1.4) + 's';
+    p.style.animationDelay = (Math.random() * 0.25) + 's';
+    container.appendChild(p);
+  }
+
+  setTimeout(() => container.remove(), 4500);
+}
+
+function submitBonus(e) {
+  e.preventDefault();
+  const input = document.getElementById('bonusInput');
+  const guess = Number(input.value);
+  const form = document.getElementById('bonusForm');
+
+  // Reusable celebratory media — YouTube iframe (16:9 aspect handled in CSS).
+  const correctMedia = `<iframe class="bonus-video-iframe"
+    src="${BONUS_CORRECT_YT_SRC}"
+    title="Celebration"
+    allow="autoplay; encrypted-media; picture-in-picture"
+    allowfullscreen
+    referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
+
+  if (guess === BONUS_ANSWER) {
+    showBonusResult(correctMedia, BONUS_CORRECT_CAPTION.fr, BONUS_CORRECT_CAPTION.nl);
+    form.hidden = true;
+    fireConfetti();
+    return false;
+  }
+
+  // Wrong attempt — show next gif. Last gif AND reveal happen together.
+  const gif = BONUS_WRONG_GIFS[bonusWrongCount];
+  const isLast = bonusWrongCount === BONUS_WRONG_GIFS.length - 1;
+  const caption = BONUS_WRONG_CAPTIONS[bonusWrongCount];
+  bonusWrongCount++;
+  updateBonusLives();
+  showBonusResult(
+    `<img class="bonus-media" src="${gif}" alt="" onerror="this.style.display='none'">`,
+    caption.fr, caption.nl
+  );
+
+  if (isLast) {
+    form.hidden = true;          // game over — reveal already shown via caption
+  } else {
+    escalateBonusButton();
+    input.select();
+  }
+  return false;
+}
+
 document.getElementById('inviteCode').value = localStorage.getItem('inviteCode') || '';
 addGuest();
+
+// Test shortcut — visit ?test=bonus to skip the form and go straight to
+// the thank-you screen with the bonus game ready (no submission).
+if (new URLSearchParams(location.search).get('test') === 'bonus') {
+  if (typeof navigateTo === 'function') navigateTo('rsvp');
+  document.querySelector('.form-section')?.style.setProperty('display', 'none');
+  document.getElementById('thankYou')?.classList.add('visible');
+}
 
