@@ -1057,6 +1057,31 @@ textarea.text-input:focus {
 
 .bonus-reveal[hidden] { display: none; }
 
+/* Secondary "modify my answer" escape on the outcome screen — sits under
+   the bonus video, deliberately quieter than .bonus-submit / .bonus-reveal
+   so it doesn't compete with the celebration / reveal copy. */
+.bonus-back {
+  display: block;
+  margin: 1.5rem auto 0;
+  padding: 0.55rem 1.3rem;
+  border: 1px solid var(--sage);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--sage-deep);
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.25s, color 0.25s;
+}
+
+.bonus-back:hover {
+  background: var(--sage);
+  color: var(--cream);
+}
+
 .bonus-result {
   margin-top: 1.25rem;
   animation: fadeUp 0.5s ease-out;

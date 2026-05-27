@@ -3,22 +3,22 @@ const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzYmqNn8PU0vywr
 
 const T = {
   fr: {
-    guestN: 'Invité',
+    guestN: 'Invité·e',
     namePlaceholder: 'Prénom et nom',
-    yes: 'Sera présent(e) ✓',
+    yes: 'Sera présent·e ✓',
     no: 'Ne pourra pas venir ✗',
-    confirm: 'Présent(e) pour :',
+    confirm: 'Présent·e pour :',
     reception: 'Réception',
     diner: 'Dîner',
     allergies: 'Allergies',
     allergiesPlaceholder: 'Allergies alimentaires, grossesse, intolérances…',
-    addGuest: 'Ajouter un invité',
+    addGuest: 'Ajouter un·e invité·e',
     submit: 'Envoyer la réponse',
     sending: 'Envoi en cours…',
     successMsg: 'Votre réponse a bien été enregistrée. Nous avons hâte de partager ce moment avec vous !',
     errorMsg: 'Une erreur est survenue. Veuillez réessayer.',
-    errorName: 'Veuillez renseigner le nom de chaque invité.',
-    errorPresence: 'Veuillez indiquer la présence pour chaque invité.',
+    errorName: 'Veuillez renseigner le nom de chaque invité·e.',
+    errorPresence: 'Veuillez indiquer la présence pour chaque invité·e.',
     errorCode: 'Le code d\'invitation est incorrect. Vérifiez le code sur votre carton d\'invitation.'
   },
   nl: {
@@ -166,6 +166,15 @@ function toggleConditional(id) {
 }
 
 
+// Swap the rsvp page into its thank-you state. Shared by the real-success
+// path, the bot-trap path, and the reload-restore path so the DOM ends up
+// identical regardless of how the user got here.
+function showThankYouScreen() {
+  document.querySelector('.form-section').style.display = 'none';
+  document.querySelector('.intro')?.style.setProperty('display', 'none');
+  document.getElementById('thankYou').classList.add('visible');
+}
+
 async function submitForm() {
   const btn = document.getElementById('submitBtn');
   const statusEl = document.getElementById('statusMessage');
@@ -177,9 +186,8 @@ async function submitForm() {
   const isBot = document.getElementById('honeypot').value
     || Date.now() - formLoadedAt < MIN_FORM_DURATION_MS;
   if (isBot) {
-    document.querySelector('.form-section').style.display = 'none';
-    document.querySelector('.intro')?.style.setProperty('display', 'none');
-    document.getElementById('thankYou').classList.add('visible');
+    localStorage.setItem('rsvpSubmittedAt', new Date().toISOString());
+    showThankYouScreen();
     return;
   }
 
@@ -243,9 +251,8 @@ async function submitForm() {
     }
 
     // Show success
-    document.querySelector('.form-section').style.display = 'none';
-    document.querySelector('.intro')?.style.setProperty('display', 'none');
-    document.getElementById('thankYou').classList.add('visible');
+    localStorage.setItem('rsvpSubmittedAt', new Date().toISOString());
+    showThankYouScreen();
 
   } catch (err) {
     console.error('RSVP submission failed:', err);
@@ -324,7 +331,30 @@ const BONUS_BUTTON_LABELS = [
 
 const CONFETTI_COLORS = ['#6F9460', '#3F5F92', '#BED8A9', '#E8C766', '#A87D4F'];
 
+// Mirrors of the in-memory game state — persisted so a reload after
+// submission doesn't hand a fresh 4-attempt board back to the guest.
+// outcome: 'pending' | 'win' | 'loss'.
 let bonusWrongCount = 0;
+let bonusGuesses = [];
+
+function saveBonusState(outcome) {
+  localStorage.setItem(
+    'bonusState',
+    JSON.stringify({ guesses: bonusGuesses, outcome })
+  );
+}
+
+function loadBonusState() {
+  try {
+    const raw = localStorage.getItem('bonusState');
+    if (!raw) return null;
+    const s = JSON.parse(raw);
+    if (!s || !Array.isArray(s.guesses)) return null;
+    return s;
+  } catch {
+    return null;
+  }
+}
 
 function showBonusResult(mediaHtml) {
   const result = document.getElementById('bonusResult');
@@ -399,6 +429,7 @@ function submitBonus(e) {
 
   if (guess === BONUS_ANSWER) {
     form.hidden = true;
+    saveBonusState('win');
     showBonusOutcome(BONUS_CELEBRATION);
     fireConfetti();
     return false;
@@ -412,6 +443,7 @@ function submitBonus(e) {
   const lives = document.querySelectorAll('#bonusLives .life');
   if (lives[bonusWrongCount]) lives[bonusWrongCount].dataset.guess = String(guess);
   bonusWrongCount++;
+  bonusGuesses.push(guess);
   updateBonusLives();
   showBonusResult(
     `<img class="bonus-media" src="${gif}" alt="" onerror="this.style.display='none'">`
@@ -419,8 +451,10 @@ function submitBonus(e) {
 
   if (isLast) {
     form.hidden = true;
+    saveBonusState('loss');
     document.getElementById('bonusReveal').hidden = false;
   } else {
+    saveBonusState('pending');
     escalateBonusButton();
     // Blur (not select) — on mobile, keeping focus pops the soft keyboard
     // straight back up and hides the gif, which is the whole punchline.
@@ -478,17 +512,76 @@ function showBonusOutcome(copy) {
   const result = document.getElementById('bonusResult');
   result.replaceChildren(...children);
   result.insertAdjacentHTML('beforeend', BONUS_VIDEO_HTML);
+
+  // Escape hatch in case a guest realises they forgot something on the
+  // form (extra plus-one, allergy, etc.). Wipes the submission flag so
+  // the next load drops them back at a clean form.
+  const back = document.createElement('button');
+  back.type = 'button';
+  back.className = 'bonus-back';
+  back.dataset.fr = 'Revenir au formulaire RSVP';
+  back.dataset.nl = 'Terug naar het RSVP-formulier';
+  back.textContent = currentLang === 'nl' ? back.dataset.nl : back.dataset.fr;
+  back.addEventListener('click', restartRsvp);
+  result.appendChild(back);
+
   result.hidden = false;
+}
+
+// Clears every trace of the previous RSVP from localStorage and reloads
+// so the page re-renders from scratch with an empty form. A full reload
+// is simpler — and less buggy — than manually unwinding the mutated
+// thank-you DOM (h2 text, hidden illustration, hidden question, etc).
+function restartRsvp() {
+  localStorage.removeItem('rsvpSubmittedAt');
+  localStorage.removeItem('bonusState');
+  location.reload();
+}
+
+// On reload after a successful submission, jump straight to the thank-you
+// screen and resume the bonus mini-game where the guest left off. Without
+// this, guests would land on a fresh form (and could re-submit) and the
+// bonus game would offer 4 fresh attempts after a partial play.
+function restoreSubmittedState() {
+  if (!localStorage.getItem('rsvpSubmittedAt')) return;
+  showThankYouScreen();
+
+  const state = loadBonusState();
+  if (!state) return;
+
+  bonusGuesses = state.guesses.slice();
+  bonusWrongCount = bonusGuesses.length;
+
+  const lives = document.querySelectorAll('#bonusLives .life');
+  bonusGuesses.forEach((g, i) => {
+    if (lives[i]) lives[i].dataset.guess = String(g);
+  });
+  updateBonusLives();
+  escalateBonusButton();
+
+  if (state.outcome === 'win') {
+    document.getElementById('bonusForm').hidden = true;
+    showBonusOutcome(BONUS_CELEBRATION);
+    return;
+  }
+
+  if (state.outcome === 'loss') {
+    document.getElementById('bonusForm').hidden = true;
+    showBonusOutcome(BONUS_REVEAL);
+    return;
+  }
+
+  // Still playing — re-show the last wrong-guess gif so the page looks
+  // exactly like it did before the reload.
+  if (bonusWrongCount > 0) {
+    const gif = BONUS_WRONG_GIFS[bonusWrongCount - 1];
+    showBonusResult(
+      `<img class="bonus-media" src="${gif}" alt="" onerror="this.style.display='none'">`
+    );
+  }
 }
 
 document.getElementById('inviteCode').value = localStorage.getItem('inviteCode') || '';
 addGuest();
-
-// Test shortcut — visit ?test=bonus to skip the form and go straight to
-// the thank-you screen with the bonus game ready (no submission).
-if (new URLSearchParams(location.search).get('test') === 'bonus') {
-  if (typeof navigateTo === 'function') navigateTo('rsvp');
-  document.querySelector('.form-section')?.style.setProperty('display', 'none');
-  document.getElementById('thankYou')?.classList.add('visible');
-}
+restoreSubmittedState();
 
