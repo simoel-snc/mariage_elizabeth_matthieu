@@ -299,18 +299,18 @@ const BONUS_VIDEO_HTML = `<iframe class="bonus-video-iframe"
 // or by clicking "voir la bonne réponse" after 4 wrong guesses (consolation).
 // Same shape so they share the same renderer.
 const BONUS_CELEBRATION = {
-  titleFr: 'BRAVO, FÉLICITATIONS !',
-  titleNl: 'BRAVO, GEFELICITEERD !',
-  introFr: "Vous venez d'éviter de devoir nous faire en spectacle la chanson suivante le jour J !",
-  introNl: 'U hebt nipt vermeden een optreden van het onderstaande lied te moeten brengen op de grote dag !'
+  titleFr: 'FÉLICITATIONS !',
+  titleNl: 'GEFELICITEERD !',
+  introFr: "Vous venez d'éviter de devoir nous interpréter la chanson suivante en spectacle le jour J !",
+  introNl: 'U hebt nipt vermeden het onderstaande lied te moeten uitvoeren op de grote dag !'
 };
 const BONUS_REVEAL = {
   titleFr: 'QUELLE DÉCEPTION…',
   titleNl: 'WAT EEN TELEURSTELLING...',
   subtitleFr: `La bonne réponse était ${BONUS_ANSWER}`,
   subtitleNl: `Het juiste antwoord was ${BONUS_ANSWER}`,
-  introFr: 'Pour vous rattraper, nous vous serions reconnaissant de nous préparer la chanson suivante en spectacle pour le jour J !',
-  introNl: 'Om het goed te maken, zal u zo vriendelijk zijn het onderstaande lied voor te bereiden, voor een optreden op de grote dag !'
+  introFr: 'Pour vous rattraper, nous vous serions reconnaissants de nous préparer en spectacle la chanson suivante pour le jour J !',
+  introNl: 'Om het goed te maken, zou u zo vriendelijk willen zijn het onderstaande lied in te studeren voor een optreden op de grote dag !'
 };
 
 // Submit-button label per attempt count (0 = first try). Last entry
