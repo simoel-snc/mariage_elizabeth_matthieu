@@ -15,27 +15,34 @@
 }
 
 :root {
-  --sage-deep:  #4A6B40;   /* headings, primary text on cream */
-  --sage:       #6F9460;   /* links, CTAs */
-  --sage-soft:  #BED8A9;   /* hover fills, borders */
-  --sage-mist:  #E5EED9;   /* card hover */
+  --sage-deep: #4A6B40;
+  /* headings, primary text on cream */
+  --sage: #6F9460;
+  /* links, CTAs */
+  --sage-soft: #BED8A9;
+  /* hover fills, borders */
+  --sage-mist: #E5EED9;
+  /* card hover */
 
-  --cobalt:     #3F5F92;   /* invitation calligraphy blue */
+  --cobalt: #3F5F92;
+  /* invitation calligraphy blue */
 
-  --cream:      #DCE7D3;   /* page bg — soft sage green */
-  --paper:      #E8F1DD;   /* card bg — paler sage green */
+  --cream: #DCE7D3;
+  /* page bg — soft sage green */
+  --paper: #E8F1DD;
+  /* card bg — paler sage green */
   --paper-edge: #CCD8BD;
-  --ink:        #2D3A28;
-  --ink-soft:   #6B7560;
+  --ink: #2D3A28;
+  --ink-soft: #6B7560;
 
-  --error:      #B35A52;
-  --success:    #5E8552;
+  --error: #B35A52;
+  --success: #5E8552;
 
   --sans: 'Mulish', sans-serif;
 
   --shadow-card: 0 6px 28px -8px rgba(74, 107, 64, 0.18), 0 2px 6px rgba(74, 107, 64, 0.06);
   --shadow-soft: 0 2px 12px rgba(74, 107, 64, 0.08);
-  --radius:    14px;
+  --radius: 14px;
   --radius-sm: 8px;
 }
 
@@ -63,7 +70,7 @@ body::before {
   pointer-events: none;
   z-index: 0;
   background-image:
-    radial-gradient(ellipse at 12% 8%,  rgba(189, 216, 169, 0.18), transparent 55%),
+    radial-gradient(ellipse at 12% 8%, rgba(189, 216, 169, 0.18), transparent 55%),
     radial-gradient(ellipse at 88% 18%, rgba(183, 196, 219, 0.12), transparent 60%),
     radial-gradient(ellipse at 50% 92%, rgba(232, 199, 102, 0.08), transparent 60%);
 }
@@ -128,13 +135,26 @@ body::after {
   filter: drop-shadow(0 1px 0 rgba(63, 95, 146, 0.06));
 }
 
-.header .wordmark      { width: min(520px, 43vw); }
-.header .wordmark-date { width: min(220px, 18vw); margin-top: 0.4rem; opacity: 0.9; }
+.header .wordmark {
+  width: min(520px, 43vw);
+}
+
+.header .wordmark-date {
+  width: min(220px, 18vw);
+  margin-top: 0.4rem;
+  opacity: 0.9;
+}
 
 @media (max-width: 700px) {
+
   /* Trees are hidden here — let the title breathe again */
-  .header .wordmark      { width: min(520px, 68vw); }
-  .header .wordmark-date { width: min(220px, 32vw); }
+  .header .wordmark {
+    width: min(520px, 68vw);
+  }
+
+  .header .wordmark-date {
+    width: min(220px, 32vw);
+  }
 }
 
 
@@ -205,12 +225,25 @@ body::after {
 
 /* === SPA PAGES ====================================================== */
 
-.page { display: none; }
-.page.active { display: block; animation: pageFadeIn 0.35s ease; }
+.page {
+  display: none;
+}
+
+.page.active {
+  display: block;
+  animation: pageFadeIn 0.35s ease;
+}
 
 @keyframes pageFadeIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* === MAIN CONTAINER ================================================ */
@@ -249,10 +282,21 @@ body::after {
   animation: fadeUp 0.8s ease-out both;
 }
 
-.info-section:nth-of-type(1) { animation-delay: 0.10s; }
-.info-section:nth-of-type(2) { animation-delay: 0.18s; }
-.info-section:nth-of-type(3) { animation-delay: 0.26s; }
-.info-section:nth-of-type(4) { animation-delay: 0.34s; }
+.info-section:nth-of-type(1) {
+  animation-delay: 0.10s;
+}
+
+.info-section:nth-of-type(2) {
+  animation-delay: 0.18s;
+}
+
+.info-section:nth-of-type(3) {
+  animation-delay: 0.26s;
+}
+
+.info-section:nth-of-type(4) {
+  animation-delay: 0.34s;
+}
 
 /* Section icon (illustration shown inside venue/dress cards).
    Sized by height so icons of varying widths feel balanced.
@@ -375,7 +419,9 @@ body::after {
   transform: translateY(-1px);
 }
 
-.info-link .qr { display: none; }
+.info-link .qr {
+  display: none;
+}
 
 /* Floating QR popover on desktop. Appears above the button on hover/focus
    at a size that's actually scannable from a phone camera. Hidden by
@@ -401,6 +447,7 @@ body::after {
     transition: opacity 0.2s ease, transform 0.2s ease;
     z-index: 10;
   }
+
   .info-link:hover .qr,
   .info-link:focus-visible .qr {
     opacity: 1;
@@ -452,6 +499,7 @@ body::after {
 }
 
 @media (max-width: 480px) {
+
   /* Mobile: revert to flex column-flow for each row (time stacks above event) */
   .venue-times {
     display: flex;
@@ -459,13 +507,17 @@ body::after {
     align-items: center;
     gap: 0.7rem;
   }
+
   .venue-time-row {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 0;
   }
-  .venue-time { text-align: center; }
+
+  .venue-time {
+    text-align: center;
+  }
 }
 
 /* === DRESS CODE =================================================== */
@@ -497,6 +549,18 @@ body::after {
   line-height: 1.85;
 }
 
+/* Small section headings inside the RSVP form ("Vos invités" /
+   "Confirmation") that delineate the guest list from the contact block. */
+.form-subtitle {
+  font-family: var(--sans);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--sage);
+  margin: 0 0 1rem;
+}
+
 /* === GUEST CARD (RSVP) =========================================== */
 
 .guest-card {
@@ -515,19 +579,45 @@ body::after {
   box-shadow: 0 10px 36px -10px rgba(74, 107, 64, 0.22), 0 3px 8px rgba(74, 107, 64, 0.08);
 }
 
-.guest-card-header {
+/* Unified top row: name input on the left, an aside on the right holding the
+   perched chicken (first card) or the remove button (others). The aside has a
+   fixed height, so every card is the same height regardless of which it holds. */
+.guest-top {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
+  gap: 1rem;
+  margin-bottom: 1.4rem;
 }
 
-.guest-number {
-  font-family: var(--sans);
-  font-size: 1.15rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  color: var(--sage-deep);
+.guest-top .name-field {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.guest-aside {
+  flex: 0 0 88px;
+  height: 88px;
+  display: flex;
+  /* Top-align: the chicken fills the full slot height so this is a no-op for
+     it, but it lifts the small remove button into the top-right corner. */
+  align-items: flex-start;
+  justify-content: flex-end;
+  /* Nudge the slot up so it sits higher in the card than the
+     vertically-centred name field. */
+  margin-top: -0.2rem;
+}
+
+.guest-chicken {
+  display: block;
+  transform: rotate(-3deg);
+  opacity: 0.9;
+}
+
+.guest-chicken img {
+  display: block;
+  height: 88px;
+  width: auto;
+  filter: drop-shadow(0 2px 4px rgba(74, 107, 64, 0.08));
 }
 
 .remove-guest {
@@ -619,7 +709,9 @@ textarea.text-input:focus {
   position: relative;
 }
 
-.presence-option input { display: none; }
+.presence-option input {
+  display: none;
+}
 
 .presence-label {
   display: flex;
@@ -644,13 +736,13 @@ textarea.text-input:focus {
   color: var(--sage-deep);
 }
 
-.presence-option input:checked + .presence-label.yes {
+.presence-option input:checked+.presence-label.yes {
   border-color: var(--success);
   background: rgba(94, 133, 82, 0.08);
   color: var(--success);
 }
 
-.presence-option input:checked + .presence-label.no {
+.presence-option input:checked+.presence-label.no {
   border-color: var(--error);
   background: rgba(179, 90, 82, 0.06);
   color: var(--error);
@@ -663,7 +755,9 @@ textarea.text-input:focus {
   animation: fadeUp 0.4s ease-out;
 }
 
-.conditional-fields.visible { display: block; }
+.conditional-fields.visible {
+  display: block;
+}
 
 /* === CHECKBOXES ================================================== */
 
@@ -673,8 +767,13 @@ textarea.text-input:focus {
   gap: 0.5rem;
 }
 
-.checkbox-item { position: relative; }
-.checkbox-item input { display: none; }
+.checkbox-item {
+  position: relative;
+}
+
+.checkbox-item input {
+  display: none;
+}
 
 .checkbox-label {
   display: flex;
@@ -713,18 +812,18 @@ textarea.text-input:focus {
   fill: none;
 }
 
-.checkbox-item input:checked + .checkbox-label {
+.checkbox-item input:checked+.checkbox-label {
   border-color: var(--sage);
   background: var(--sage-mist);
   color: var(--sage-deep);
 }
 
-.checkbox-item input:checked + .checkbox-label .check-box {
+.checkbox-item input:checked+.checkbox-label .check-box {
   background: var(--sage);
   border-color: var(--sage);
 }
 
-.checkbox-item input:checked + .checkbox-label .check-box svg {
+.checkbox-item input:checked+.checkbox-label .check-box svg {
   opacity: 1;
 }
 
@@ -741,29 +840,41 @@ textarea.text-input:focus {
   gap: 0.6rem;
   width: 100%;
   padding: 1.1rem;
-  border: 1.5px dashed var(--sage-soft);
+  border: 2px dashed var(--sage);
   border-radius: var(--radius);
-  background: transparent;
+  background: var(--sage-mist);
   font-family: var(--sans);
-  font-weight: 500;
+  font-weight: 600;
   font-size: 0.85rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--sage-deep);
   cursor: pointer;
   transition: all 0.25s;
-  margin-bottom: 2rem;
+  margin-bottom: 4.5rem;
 }
 
 .add-guest-btn:hover {
-  border-color: var(--sage);
-  background: var(--sage-mist);
+  border-color: var(--sage-deep);
+  background: var(--sage-soft);
 }
 
 .add-guest-btn .plus {
   font-size: 1.3rem;
   line-height: 1;
   color: var(--sage);
+}
+
+/* Email field — one per RSVP, between the add-guest button and submit.
+   Carded to match the guest cards; the "Confirmation" subtitle above it
+   provides the section separation. */
+.contact-field {
+  background: var(--paper);
+  border: 1px solid var(--paper-edge);
+  border-radius: var(--radius);
+  padding: 2rem 1.75rem;
+  margin-bottom: 2rem;
+  box-shadow: var(--shadow-card);
 }
 
 /* === SUBMIT ====================================================== */
@@ -794,7 +905,9 @@ textarea.text-input:focus {
   filter: brightness(1.05);
 }
 
-.submit-btn:active { transform: translateY(0); }
+.submit-btn:active {
+  transform: translateY(0);
+}
 
 .submit-btn:disabled {
   opacity: 0.55;
@@ -843,7 +956,9 @@ textarea.text-input:focus {
   animation: fadeUp 0.8s ease-out;
 }
 
-.thank-you.visible { display: block; }
+.thank-you.visible {
+  display: block;
+}
 
 .thank-you::before {
   content: '';
@@ -872,7 +987,7 @@ textarea.text-input:focus {
 
 /* Direct-child only — otherwise this margin: 0 auto bulldozes the bottom
    margins of nested bonus paragraphs (.bonus-question, .bonus-outcome-intro). */
-.thank-you > p {
+.thank-you>p {
   font-size: 1rem;
   color: var(--ink-soft);
   line-height: 1.85;
@@ -964,7 +1079,9 @@ textarea.text-input:focus {
   color: var(--error);
 }
 
-.bonus-lives .lives-row { line-height: 1; }
+.bonus-lives .lives-row {
+  line-height: 1;
+}
 
 .bonus-lives .life {
   display: inline-block;
@@ -1010,7 +1127,9 @@ textarea.text-input:focus {
 }
 
 .bonus-form[hidden],
-.bonus-lives[hidden] { display: none; }
+.bonus-lives[hidden] {
+  display: none;
+}
 
 .bonus-input {
   width: 4rem;
@@ -1048,14 +1167,18 @@ textarea.text-input:focus {
 }
 
 .bonus-submit:hover,
-.bonus-reveal:hover { background: var(--sage-deep); }
+.bonus-reveal:hover {
+  background: var(--sage-deep);
+}
 
 .bonus-reveal {
   display: block;
   margin: 1.25rem auto 0;
 }
 
-.bonus-reveal[hidden] { display: none; }
+.bonus-reveal[hidden] {
+  display: none;
+}
 
 /* Secondary "modify my answer" escape on the outcome screen — sits under
    the bonus video, deliberately quieter than .bonus-submit / .bonus-reveal
@@ -1131,13 +1254,25 @@ textarea.text-input:focus {
 }
 
 @keyframes confetti-burst {
-  0%   { transform: translate(0, 0) rotate(0deg) scale(0); opacity: 1; }
-  15%  { opacity: 1; }
-  100% { transform: translate(var(--dx), var(--dy)) rotate(var(--r)) scale(1); opacity: 0; }
+  0% {
+    transform: translate(0, 0) rotate(0deg) scale(0);
+    opacity: 1;
+  }
+
+  15% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: translate(var(--dx), var(--dy)) rotate(var(--r)) scale(1);
+    opacity: 0;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .confetti { display: none; }
+  .confetti {
+    display: none;
+  }
 }
 
 /* === GATE SCREEN ================================================== */
@@ -1177,7 +1312,9 @@ textarea.text-input:focus {
   font-style: italic;
 }
 
-.gate-loader { margin-top: 1.5rem; }
+.gate-loader {
+  margin-top: 1.5rem;
+}
 
 .spinner {
   width: 30px;
@@ -1189,7 +1326,11 @@ textarea.text-input:focus {
   margin: 0 auto;
 }
 
-@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 
 /* === PIN ENTRY ==================================================== */
 
@@ -1208,15 +1349,14 @@ textarea.text-input:focus {
 }
 
 .pin-box {
-  width: 3rem;
-  height: 3.5rem;
+  width: 3.5rem;
+  height: 4rem;
   font-family: var(--sans);
   font-size: 1.6rem;
   font-weight: 600;
   text-align: center;
-  border: 0;
-  border-bottom: 2px solid var(--sage-soft);
-  border-radius: 0;
+  border: 2px solid var(--sage-soft);
+  border-radius: var(--radius-sm);
   background: transparent;
   color: var(--sage-deep);
   transition: border-color 0.2s, transform 0.15s;
@@ -1224,12 +1364,12 @@ textarea.text-input:focus {
 
 .pin-box:focus {
   outline: none;
-  border-bottom-color: var(--sage-deep);
+  border-color: var(--sage-deep);
   transform: translateY(-2px);
 }
 
 .pin-box.error {
-  border-bottom-color: var(--error);
+  border-color: var(--error);
   color: var(--error);
 }
 
@@ -1255,7 +1395,11 @@ textarea.text-input:focus {
   box-shadow: 0 7px 18px -4px rgba(74, 107, 64, 0.45);
 }
 
-.pin-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+.pin-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
 
 .pin-error {
   color: var(--error);
@@ -1355,20 +1499,36 @@ textarea.text-input:focus {
   cursor: pointer;
 }
 
-.map-chooser-cancel:hover { color: var(--sage-deep); }
+.map-chooser-cancel:hover {
+  color: var(--sage-deep);
+}
 
 @keyframes chooserFadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
+
 @keyframes chooserSlideUp {
-  from { transform: translateY(100%); }
-  to   { transform: translateY(0); }
+  from {
+    transform: translateY(100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
 }
 
 /* Tablet+ : centered modal instead of bottom sheet */
 @media (min-width: 640px) {
-  .map-chooser { align-items: center; }
+  .map-chooser {
+    align-items: center;
+  }
+
   .map-chooser-sheet {
     border-radius: 16px;
     max-width: 360px;
@@ -1426,17 +1586,26 @@ textarea.text-input:focus {
 /* Chickens are positioned relative to the .container; we need it
    to be a positioning context. */
 .container,
-.gate-screen { position: relative; }
+.gate-screen {
+  position: relative;
+}
 
 /* Concrete chicken placements — small, asymmetric, never clipped.
    Sizes intentionally subtle (chickens "hidden" through the page). */
 .deco-chick-bottom-left {
-  width: 56px; left: 0.5rem; bottom: 4%;
+  width: 56px;
+  left: 0.5rem;
+  /* Fixed offset (not %), so the chick stays put instead of creeping upward
+     as the form grows taller when guests are added. */
+  bottom: 2.5rem;
   transform: rotate(3deg);
   opacity: 0.9;
 }
+
 .deco-chick-corner {
-  width: 42px; right: 1rem; bottom: 1rem;
+  width: 42px;
+  right: 1rem;
+  bottom: 1rem;
   --rot: 6deg;
   transform: rotate(var(--rot));
   animation: gentleBob 4s ease-in-out infinite;
@@ -1466,39 +1635,42 @@ textarea.text-input:focus {
   opacity: 0.92;
 }
 
-.deco-chicken-fence {
-  /* perched on a fence — sits inside the top-right corner of the
-     guest card. Fixed top (not %) so it stays put when conditional
-     form fields show/hide and the container resizes. */
-  width: 88px;
-  right: 2rem;
-  top: 1rem;
-  transform: rotate(-3deg);
-  opacity: 0.88;
-}
-
-/* Hide the fence chicken once the form is submitted — the thank-you
-   card has its own focus and the chicken would just sit awkwardly
-   above it. */
-#page-rsvp:has(#thankYou.visible) .deco-chicken-fence {
-  display: none;
-}
-
 /* === ANIMATIONS =================================================== */
 
 @keyframes fadeDown {
-  from { opacity: 0; transform: translateY(-22px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-22px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes gentleBob {
-  0%, 100% { transform: translateY(0) rotate(var(--rot, 0deg)); }
-  50%      { transform: translateY(-3px) rotate(var(--rot, 0deg)); }
+
+  0%,
+  100% {
+    transform: translateY(0) rotate(var(--rot, 0deg));
+  }
+
+  50% {
+    transform: translateY(-3px) rotate(var(--rot, 0deg));
+  }
 }
 
 
@@ -1517,7 +1689,9 @@ textarea.text-input:focus {
     padding: 1.5rem 1rem 2.25rem;
   }
 
-  .container { padding: 0.5rem 1rem 3rem; }
+  .container {
+    padding: 0.5rem 1rem 3rem;
+  }
 
   .guest-card,
   .info-card,
@@ -1538,32 +1712,65 @@ textarea.text-input:focus {
     right: 0.85rem;
   }
 
-  .nav { gap: 1.6rem; }
+  .nav {
+    gap: 1.6rem;
+  }
 
-  .info-map iframe { height: 220px; }
+  .info-map iframe {
+    height: 220px;
+  }
 
   .pin-box {
-    width: 2.6rem;
-    height: 3.2rem;
+    width: 3rem;
+    height: 3.6rem;
     font-size: 1.5rem;
   }
-  .pin-inputs { gap: 0.5rem; }
+
+  .pin-inputs {
+    gap: 0.5rem;
+  }
 
   /* Hide the bigger chicken decorations on mobile to keep content room.
      Small chicks stay (still cute, not blocking text). */
   .deco-chicken-1,
-  .deco-chicken-mother,
-  .deco-chicken-fence {
+  .deco-chicken-mother {
     display: none;
   }
 
-  .deco-chick-bottom-left  { width: 50px; left: 0.4rem; }
+  /* The in-card chicken is part of the layout (not a floating deco), so it
+     stays on mobile — just slimmed so the name field keeps usable width. */
+  .guest-aside {
+    flex-basis: 64px;
+    height: 64px;
+  }
+
+  .guest-chicken img {
+    height: 64px;
+  }
+
+  .deco-chick-bottom-left {
+    width: 50px;
+    left: 0.4rem;
+  }
 }
 
 /* === PRINT ======================================================== */
 
 @media print {
-  .deco, .lang-toggle, .nav { display: none !important; }
-  body::before, body::after { display: none; }
-  body { background: white; color: black; }
+
+  .deco,
+  .lang-toggle,
+  .nav {
+    display: none !important;
+  }
+
+  body::before,
+  body::after {
+    display: none;
+  }
+
+  body {
+    background: white;
+    color: black;
+  }
 }

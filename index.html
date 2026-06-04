@@ -206,8 +206,18 @@
 
         <button type="button" class="add-guest-btn" onclick="addGuest()">
           <span class="plus">+</span>
-          <span data-fr="Ajouter un·e invité·e" data-nl="Gast toevoegen">Ajouter un·e invité·e</span>
+          <span data-fr="Ajouter un invité" data-nl="Gast toevoegen">Ajouter un invité</span>
         </button>
+
+        <p class="form-subtitle" data-fr="Adresse mail de confirmation"
+          data-nl="E-mailadres voor bevestiging">Adresse mail de confirmation</p>
+
+        <!-- One email for the whole RSVP — used to send a confirmation summary -->
+        <div class="field-group contact-field">
+          <input type="email" id="contactEmail" class="text-input" maxlength="150" inputmode="email"
+            autocomplete="email" placeholder="prenom@exemple.com" data-ph-fr="prenom@exemple.com"
+            data-ph-nl="naam@voorbeeld.com" aria-label="Adresse mail de confirmation">
+        </div>
 
         <button type="button" class="submit-btn" id="submitBtn" onclick="submitForm()">
           <span data-fr="Envoyer la réponse" data-nl="Antwoord versturen">Envoyer la réponse</span>
@@ -263,14 +273,6 @@
         <picture>
           <source srcset="img/assets/chick-single.webp" type="image/webp">
           <img src="img/assets/chick-single.png" alt="" width="113" height="144">
-        </picture>
-      </div>
-
-      <!-- Chicken perched on a fence — peeking from the right above the form -->
-      <div class="deco deco-chicken-fence" aria-hidden="true">
-        <picture>
-          <source srcset="img/assets/chicken-3-fence.webp" type="image/webp">
-          <img src="img/assets/chicken-3-fence.png" alt="" width="406" height="465">
         </picture>
       </div>
 

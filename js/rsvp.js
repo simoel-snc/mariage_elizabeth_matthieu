@@ -3,30 +3,29 @@ const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzYmqNn8PU0vywr
 
 const T = {
   fr: {
-    guestN: 'Invité·e',
     namePlaceholder: 'Prénom et nom',
-    yes: 'Sera présent·e ✓',
-    no: 'Ne pourra pas venir ✗',
-    confirm: 'Présent·e pour :',
+    yes: 'Sera présent',
+    no: 'Ne sera pas présent',
+    confirm: 'pour :',
     reception: 'Réception',
     diner: 'Dîner',
     allergies: 'Allergies',
     allergiesPlaceholder: 'Allergies alimentaires, grossesse, intolérances…',
-    addGuest: 'Ajouter un·e invité·e',
+    addGuest: 'Ajouter un invité',
     submit: 'Envoyer la réponse',
     sending: 'Envoi en cours…',
     successMsg: 'Votre réponse a bien été enregistrée. Nous avons hâte de partager ce moment avec vous !',
     errorMsg: 'Une erreur est survenue. Veuillez réessayer.',
-    errorName: 'Veuillez renseigner le nom de chaque invité·e.',
-    errorPresence: 'Veuillez indiquer la présence pour chaque invité·e.',
+    errorName: 'Veuillez renseigner le nom de chaque invité.',
+    errorPresence: 'Veuillez indiquer la présence pour chaque invité.',
+    errorEmail: 'Veuillez indiquer une adresse mail valide.',
     errorCode: 'Le code d\'invitation est incorrect. Vérifiez le code sur votre carton d\'invitation.'
   },
   nl: {
-    guestN: 'Gast',
     namePlaceholder: 'Voornaam en achternaam',
-    yes: 'Zal aanwezig zijn ✓',
-    no: 'Kan niet komen ✗',
-    confirm: 'Aanwezig voor :',
+    yes: 'Zal aanwezig zijn',
+    no: 'Zal niet aanwezig zijn',
+    confirm: 'voor :',
     reception: 'Receptie',
     diner: 'Diner',
     allergies: 'Allergieën',
@@ -38,7 +37,8 @@ const T = {
     errorMsg: 'Er is een fout opgetreden. Probeer het opnieuw.',
     errorName: 'Gelieve de naam van elke gast in te vullen.',
     errorPresence: 'Gelieve de aanwezigheid voor elke gast aan te geven.',
-    errorCode: 'De uitnodigingscode is onjuist. Controleer de code op uw uitnodigingskaart.'
+    errorEmail: 'Gelieve een geldig e-mailadres in te voeren.',
+    errorCode: 'De uitnodigingscode is onjuist. Controleer de code op uw uitnodiging.'
   }
 };
 
@@ -53,8 +53,7 @@ function t(key) {
 // and the add/submit buttons are handled by setLang() via their data-fr/
 // data-ph-fr attributes — no need to touch them here.
 function updateGuestLabels() {
-  document.querySelectorAll('.guest-card').forEach((card, idx) => {
-    card.querySelector('.guest-number').textContent = `${t('guestN')} ${idx + 1}`;
+  document.querySelectorAll('.guest-card').forEach((card) => {
     card.querySelector('.label-yes').textContent = t('yes');
     card.querySelector('.label-no').textContent = t('no');
     card.querySelector('.field-label-confirm').textContent = t('confirm');
@@ -75,15 +74,25 @@ function addGuest() {
   card.className = 'guest-card';
   card.id = `guest-${id}`;
   card.style.animationDelay = '0s';
-  card.innerHTML = `
-  <div class="guest-card-header">
-    <span class="guest-number">${t('guestN')} ${id}</span>
-    ${id > 1 ? `<button type="button" class="remove-guest" onclick="removeGuest(${id})" title="Remove">×</button>` : ''}
-  </div>
+  // Top row: name input on the left, an aside on the right holding either the
+  // perched chicken (first, un-removable card) or the remove button (others).
+  // Both variants share the row so every card is laid out — and sized — alike.
+  const aside = id > 1
+    ? `<button type="button" class="remove-guest" onclick="removeGuest(${id})" title="Remove">×</button>`
+    : `<span class="guest-chicken" aria-hidden="true">
+        <picture>
+          <source srcset="img/assets/chicken-3-fence.webp" type="image/webp">
+          <img src="img/assets/chicken-3-fence.png" alt="" width="406" height="465">
+        </picture>
+      </span>`;
 
-  <div class="field-group">
-    <input type="text" class="text-input name-input" maxlength="100" placeholder="${t('namePlaceholder')}"
-           data-ph-fr="${T.fr.namePlaceholder}" data-ph-nl="${T.nl.namePlaceholder}">
+  card.innerHTML = `
+  <div class="guest-top">
+    <div class="field-group name-field">
+      <input type="text" class="text-input name-input" maxlength="100" placeholder="${t('namePlaceholder')}"
+             data-ph-fr="${T.fr.namePlaceholder}" data-ph-nl="${T.nl.namePlaceholder}">
+    </div>
+    <div class="guest-aside">${aside}</div>
   </div>
 
   <div class="field-group">
@@ -133,7 +142,6 @@ function addGuest() {
 `;
 
   container.appendChild(card);
-  renumberGuests();
 }
 
 function removeGuest(id) {
@@ -144,15 +152,8 @@ function removeGuest(id) {
     card.style.transition = 'all 0.3s ease';
     setTimeout(() => {
       card.remove();
-      renumberGuests();
     }, 300);
   }
-}
-
-function renumberGuests() {
-  document.querySelectorAll('.guest-card').forEach((card, idx) => {
-    card.querySelector('.guest-number').textContent = `${t('guestN')} ${idx + 1}`;
-  });
 }
 
 function toggleConditional(id) {
@@ -175,6 +176,47 @@ function showThankYouScreen() {
   document.getElementById('thankYou').classList.add('visible');
 }
 
+// Backend rejection statuses → translation key for the message to show.
+const SUBMIT_ERROR_KEYS = {
+  invalid_code: 'errorCode',
+  invalid_email: 'errorEmail'
+};
+
+function showFormError(message) {
+  const statusEl = document.getElementById('statusMessage');
+  statusEl.className = 'status-message error';
+  statusEl.textContent = message;
+  statusEl.style.display = 'block';
+}
+
+// Read each guest card into a plain object. Returns { guests, errorMsg } —
+// errorMsg is the first validation failure (empty name / missing presence),
+// or '' when every card is valid.
+function collectGuests() {
+  const guests = [];
+  for (const card of document.querySelectorAll('.guest-card')) {
+    const name = card.querySelector('.name-input').value.trim();
+    if (!name) return { guests, errorMsg: t('errorName') };
+
+    const cardId = card.id.split('-')[1];
+    const yesEl = document.getElementById(`present-yes-${cardId}`);
+    const noEl = document.getElementById(`present-no-${cardId}`);
+    if (!yesEl.checked && !noEl.checked) return { guests, errorMsg: t('errorPresence') };
+
+    const present = yesEl.checked;
+    guests.push({
+      name,
+      present,
+      reception: present && document.getElementById(`reception-${cardId}`).checked,
+      diner: present && document.getElementById(`diner-${cardId}`).checked,
+      allergies: present ? card.querySelector('.allergies-input').value.trim() : '',
+      language: currentLang,
+      submittedAt: new Date().toISOString()
+    });
+  }
+  return { guests, errorMsg: '' };
+}
+
 async function submitForm() {
   const btn = document.getElementById('submitBtn');
   const statusEl = document.getElementById('statusMessage');
@@ -192,35 +234,15 @@ async function submitForm() {
   }
 
   const inviteCode = document.getElementById('inviteCode').value.trim();
+  const { guests, errorMsg: guestError } = collectGuests();
 
-  const guests = [];
-  let errorMsg = '';
-
-  for (const card of document.querySelectorAll('.guest-card')) {
-    const name = card.querySelector('.name-input').value.trim();
-    if (!name) { errorMsg = t('errorName'); break; }
-
-    const cardId = card.id.split('-')[1];
-    const yesEl = document.getElementById(`present-yes-${cardId}`);
-    const noEl = document.getElementById(`present-no-${cardId}`);
-    if (!yesEl.checked && !noEl.checked) { errorMsg = t('errorPresence'); break; }
-
-    const present = yesEl.checked;
-    guests.push({
-      name,
-      present,
-      reception: present && document.getElementById(`reception-${cardId}`).checked,
-      diner: present && document.getElementById(`diner-${cardId}`).checked,
-      allergies: present ? card.querySelector('.allergies-input').value.trim() : '',
-      language: currentLang,
-      submittedAt: new Date().toISOString()
-    });
-  }
+  // One email per RSVP — required, and used to send the confirmation summary.
+  const email = document.getElementById('contactEmail').value.trim();
+  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const errorMsg = guestError || (emailOk ? '' : t('errorEmail'));
 
   if (errorMsg) {
-    statusEl.className = 'status-message error';
-    statusEl.textContent = errorMsg;
-    statusEl.style.display = 'block';
+    showFormError(errorMsg);
     return;
   }
 
@@ -232,15 +254,16 @@ async function submitForm() {
     const response = await fetch(APPS_SCRIPT_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify({ guests, code: inviteCode })
+      body: JSON.stringify({ guests, code: inviteCode, email })
     });
 
     const result = await response.json();
 
-    if (result.status === 'invalid_code') {
-      statusEl.className = 'status-message error';
-      statusEl.textContent = t('errorCode');
-      statusEl.style.display = 'block';
+    // Known backend rejections (bad code / bad email): show the message and
+    // let the guest fix it.
+    const errKey = SUBMIT_ERROR_KEYS[result.status];
+    if (errKey) {
+      showFormError(t(errKey));
       btn.disabled = false;
       btn.querySelector('span').textContent = t('submit');
       return;
@@ -256,9 +279,7 @@ async function submitForm() {
 
   } catch (err) {
     console.error('RSVP submission failed:', err);
-    statusEl.className = 'status-message error';
-    statusEl.textContent = t('errorMsg');
-    statusEl.style.display = 'block';
+    showFormError(t('errorMsg'));
     btn.disabled = false;
     btn.querySelector('span').textContent = t('submit');
   }
@@ -286,13 +307,15 @@ const BONUS_WRONG_GIFS = [
   'https://kaamelott-gifboard.fr/gifs/debile-toujours-inattendu.gif'
 ];
 // Celebratory clip — YouTube embed via the privacy-enhanced nocookie
-// domain. To trim to a specific window, append &start=NN&end=NN to
-// the src URL (seconds). Loop quirk: YouTube requires both loop=1 AND
-// playlist=<same id> for autoplay-loop to work.
+// domain. NOT autoplayed on purpose: guests press play themselves, which
+// means it starts with sound (browsers force muted on autoplay). YouTube
+// shows its poster + play button until then. To trim to a specific window,
+// append &start=NN&end=NN to the src URL (seconds). Loop quirk: YouTube
+// requires both loop=1 AND playlist=<same id> for the loop to work.
 const BONUS_CORRECT_YT_ID = 'Hqfsukw9S6Y';
 const BONUS_CORRECT_YT_SRC =
   `https://www.youtube-nocookie.com/embed/${BONUS_CORRECT_YT_ID}` +
-  `?autoplay=1&mute=1&loop=1&playlist=${BONUS_CORRECT_YT_ID}` +
+  `?loop=1&playlist=${BONUS_CORRECT_YT_ID}` +
   `&modestbranding=1&rel=0&playsinline=1`;
 // Same video markup reused for the win flow and the post-loss reveal.
 const BONUS_VIDEO_HTML = `<iframe class="bonus-video-iframe"
@@ -308,7 +331,7 @@ const BONUS_VIDEO_HTML = `<iframe class="bonus-video-iframe"
 const BONUS_CELEBRATION = {
   titleFr: 'FÉLICITATIONS !',
   titleNl: 'GEFELICITEERD !',
-  introFr: "Vous venez d'éviter de devoir nous interpréter la chanson suivante en spectacle le jour J !",
+  introFr: "Vous venez d'éviter de devoir nous interpréter la chanson suivante le jour J !",
   introNl: 'U hebt nipt vermeden het onderstaande lied te moeten uitvoeren op de grote dag !'
 };
 const BONUS_REVEAL = {
@@ -316,8 +339,8 @@ const BONUS_REVEAL = {
   titleNl: 'WAT EEN TELEURSTELLING...',
   subtitleFr: `La bonne réponse était ${BONUS_ANSWER}`,
   subtitleNl: `Het juiste antwoord was ${BONUS_ANSWER}`,
-  introFr: 'Pour vous rattraper, nous vous serions reconnaissants de nous préparer en spectacle la chanson suivante pour le jour J !',
-  introNl: 'Om het goed te maken, zou u zo vriendelijk willen zijn het onderstaande lied in te studeren voor een optreden op de grote dag !'
+  introFr: 'Pour remonter dans notre estime, vous serez gentil de nous interpréter la chanson suivante le jour J … ou pas 😄',
+  introNl: 'Om het goed te maken, zou u zo vriendelijk zijn het onderstaande lied uit te voeren op de grote dag … of toch niet 😄'
 };
 
 // Submit-button label per attempt count (0 = first try). Last entry
@@ -463,13 +486,34 @@ function submitBonus(e) {
 
   // Pull the gif AND the call-to-action below into view. Scrolling the
   // CTA (form on retry, reveal button on game-over) into the bottom of
-  // the viewport leaves the gif visible above it. Delayed a tick so the
-  // mobile keyboard finishes collapsing before the scroll computes.
+  // the viewport leaves the gif visible above it.
   const scrollTarget = isLast
     ? document.getElementById('bonusReveal')
     : document.getElementById('bonusForm');
-  setTimeout(() => scrollTarget.scrollIntoView({ behavior: 'smooth', block: 'end' }), 80);
+  scrollBonusIntoView(scrollTarget);
   return false;
+}
+
+// Scroll the bonus CTA to the bottom of the viewport AFTER the mobile soft
+// keyboard finishes collapsing. The old fixed 80ms timeout was unreliable:
+// it often fired while the keyboard was still animating away, so the scroll
+// computed against a shrunken viewport and stopped short of the gif. Instead
+// we wait for the visualViewport resize that the collapse triggers, with a
+// timeout fallback for desktop / already-closed-keyboard cases.
+function scrollBonusIntoView(target) {
+  const doScroll = () =>
+    target.scrollIntoView({ behavior: 'smooth', block: 'end' });
+  const vv = globalThis.visualViewport;
+  if (!vv) { setTimeout(doScroll, 80); return; }
+  let done = false;
+  const fire = () => {
+    if (done) return;
+    done = true;
+    vv.removeEventListener('resize', fire);
+    doScroll();
+  };
+  vv.addEventListener('resize', fire);   // keyboard finished collapsing
+  setTimeout(fire, 350);                  // fallback: no resize fired
 }
 
 function revealBonusAnswer() {
@@ -513,28 +557,37 @@ function showBonusOutcome(copy) {
   result.replaceChildren(...children);
   result.insertAdjacentHTML('beforeend', BONUS_VIDEO_HTML);
 
-  // Escape hatch in case a guest realises they forgot something on the
-  // form (extra plus-one, allergy, etc.). Wipes the submission flag so
-  // the next load drops them back at a clean form.
-  const back = document.createElement('button');
-  back.type = 'button';
-  back.className = 'bonus-back';
-  back.dataset.fr = 'Revenir au formulaire RSVP';
-  back.dataset.nl = 'Terug naar het RSVP-formulier';
-  back.textContent = currentLang === 'nl' ? back.dataset.nl : back.dataset.fr;
-  back.addEventListener('click', restartRsvp);
-  result.appendChild(back);
+  // Finish action — closes the bonus game and returns to the Informations
+  // home page. Also wipes the submission flags so a later visit to the RSVP
+  // tab shows a clean form rather than this end-game screen.
+  const done = document.createElement('button');
+  done.type = 'button';
+  done.className = 'bonus-back';
+  done.dataset.fr = 'Terminer';
+  done.dataset.nl = 'Voltooien';
+  done.textContent = currentLang === 'nl' ? done.dataset.nl : done.dataset.fr;
+  done.addEventListener('click', finishBonus);
+  result.appendChild(done);
 
   result.hidden = false;
 }
 
 // Clears every trace of the previous RSVP from localStorage and reloads
-// so the page re-renders from scratch with an empty form. A full reload
-// is simpler — and less buggy — than manually unwinding the mutated
-// thank-you DOM (h2 text, hidden illustration, hidden question, etc).
-function restartRsvp() {
+// onto the Informations home page. Clearing the flags means the next load
+// re-renders a clean RSVP form (restoreSubmittedState becomes a no-op); a
+// full reload is simpler — and less buggy — than manually unwinding the
+// mutated thank-you DOM (h2 text, hidden illustration, hidden question, etc).
+function finishBonus() {
   localStorage.removeItem('rsvpSubmittedAt');
   localStorage.removeItem('bonusState');
+  // Open Informations scrolled to the top after the reload. Without this the
+  // browser restores the end-game scroll position (the guest was near the
+  // bottom) and '#infos' matches no element id, so nothing pulls it back up.
+  // The flag is consumed on the next load; disabling scrollRestoration keeps
+  // the browser from fighting our scroll.
+  sessionStorage.setItem('scrollTopOnLoad', '1');
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  location.hash = 'infos';
   location.reload();
 }
 
@@ -584,4 +637,11 @@ function restoreSubmittedState() {
 document.getElementById('inviteCode').value = localStorage.getItem('inviteCode') || '';
 addGuest();
 restoreSubmittedState();
+
+// finishBonus() asks the post-reload home page to open at the top. Run on the
+// load event so it lands after any browser scroll restoration would have fired.
+if (sessionStorage.getItem('scrollTopOnLoad')) {
+  sessionStorage.removeItem('scrollTopOnLoad');
+  globalThis.addEventListener('load', () => globalThis.scrollTo(0, 0));
+}
 
