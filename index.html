@@ -38,6 +38,7 @@
       pages: {
         infos: { fr: 'Programme', nl: 'Programma', shortFr: 'Programme', shortNl: 'Programma' },
         dresscode: { fr: 'Dress Code', nl: 'Dress Code', shortFr: 'Dress Code', shortNl: 'Dress Code' },
+        cadeau: { fr: 'Cadeau', nl: 'Cadeau', shortFr: 'Cadeau', shortNl: 'Cadeau' },
         rsvp: { fr: 'Nous nous marions', nl: 'Wij gaan trouwen', shortFr: 'RSVP', shortNl: 'RSVP' }
       }
     };</script>
@@ -185,6 +186,132 @@
 
     </div>
 
+    <!-- ==================== CADEAU PAGE ==================== -->
+    <div class="page" id="page-cadeau">
+
+      <!-- Gift 1 — Kadolog wedding registry -->
+      <section class="info-section">
+        <div class="info-card gift-card gift-card-kadolog">
+          <picture>
+            <source srcset="img/assets/scene-champagne.webp" type="image/webp">
+            <img class="section-icon" src="img/assets/scene-champagne.png" alt="" width="113" height="199"
+              loading="lazy">
+          </picture>
+          <a class="info-link" target="_blank" rel="noopener"
+            href="https://www.kadolog.com/fr/list/liste-de-mariage-de-elizabeth-matthieu-2862968"
+            data-href-fr="https://www.kadolog.com/fr/list/liste-de-mariage-de-elizabeth-matthieu-2862968"
+            data-href-nl="https://www.kadolog.com/nl/list/liste-de-mariage-de-elizabeth-matthieu-2862968">
+            <span>Kadolog</span>
+          </a>
+        </div>
+      </section>
+
+      <!-- Gift 2 — donation to ASBL L'Ilot -->
+      <section class="info-section">
+        <div class="info-card gift-card">
+          <!-- Lead: spans around the anchor so setLang (which sets textContent) doesn't
+               wipe the <a>. "l'ASBL « L'Ilot »" is the full link text in FR. -->
+          <p class="gift-lead"><span
+              data-fr="Pour que notre bonheur puisse être partagé, nous proposons à ceux qui le souhaitent de soutenir "
+              data-nl="Om ons geluk te delen, stellen we wie dat wenst voor om de ">Pour que notre bonheur puisse être partagé, nous proposons à ceux qui le souhaitent de soutenir </span><a
+              class="gift-namelink" href="https://ilot.be/" target="_blank" rel="noopener"
+              data-fr="l'ASBL « L'Ilot »" data-nl="VZW « L'Ilot »">l'ASBL « L'Ilot »</a><span
+              data-fr=" qui nous tient à cœur." data-nl=" te steunen, die ons nauw aan het hart ligt."> qui nous tient à cœur.</span>
+          </p>
+          <p class="gift-desc"
+            data-fr="Depuis 60 ans, l'Ilot lutte contre le sans-abrisme en répondant aux besoins des personnes sans chez-soi ou mal-logées : accueil d'urgence, hébergement temporaire, logement, formation vers l'emploi et santé alimentaire."
+            data-nl="Al 60 jaar strijdt L'Ilot tegen dakloosheid door tegemoet te komen aan de noden van mensen zonder thuis of met een slechte huisvesting: noodopvang, tijdelijke huisvesting, woonruimte, opleiding naar werk en gezonde voeding.">
+            Depuis 60 ans, l'Ilot lutte contre le sans-abrisme en répondant aux besoins des personnes sans chez-soi ou
+            mal-logées : accueil d'urgence, hébergement temporaire, logement, formation vers l'emploi et santé
+            alimentaire.
+          </p>
+
+          <!-- Accordion — collapsed by default; contains all transfer details. -->
+          <details class="gift-details">
+            <summary class="gift-summary">
+              <span data-fr="Faire un don" data-nl="Een gift doen">Faire un don</span>
+              <svg class="gift-chevron" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </summary>
+
+            <div class="copy-block">
+              <button type="button" class="copy-row" data-copy="ASBL Ilot" onclick="copyField(this)">
+                <span class="copy-text">
+                  <span class="copy-label" data-fr="Bénéficiaire" data-nl="Begunstigde">Bénéficiaire</span>
+                  <span class="copy-value">ASBL Ilot</span>
+                </span>
+                <span class="copy-action">
+                  <svg class="copy-glyph" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor"
+                    stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect x="9" y="9" width="11" height="11" rx="2"></rect>
+                    <path d="M5 15V5a2 2 0 0 1 2-2h10"></path>
+                  </svg>
+                  <span class="copy-done" data-fr="Copié" data-nl="Gekopieerd">Copié</span>
+                </span>
+              </button>
+
+              <button type="button" class="copy-row" data-copy="BE33001728922946" onclick="copyField(this)">
+                <span class="copy-text">
+                  <span class="copy-label" data-fr="Numéro de compte" data-nl="Rekeningnummer">Numéro de compte</span>
+                  <span class="copy-value iban">BE33 0017 2892 2946</span>
+                </span>
+                <span class="copy-action">
+                  <svg class="copy-glyph" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor"
+                    stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect x="9" y="9" width="11" height="11" rx="2"></rect>
+                    <path d="M5 15V5a2 2 0 0 1 2-2h10"></path>
+                  </svg>
+                  <span class="copy-done" data-fr="Copié" data-nl="Gekopieerd">Copié</span>
+                </span>
+              </button>
+
+              <button type="button" class="copy-row" data-copy="Elizabeth et Matthieu" onclick="copyField(this)">
+                <span class="copy-text">
+                  <span class="copy-label" data-fr="Communication" data-nl="Mededeling">Communication</span>
+                  <span class="copy-value">Elizabeth et Matthieu</span>
+                </span>
+                <span class="copy-action">
+                  <svg class="copy-glyph" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor"
+                    stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect x="9" y="9" width="11" height="11" rx="2"></rect>
+                    <path d="M5 15V5a2 2 0 0 1 2-2h10"></path>
+                  </svg>
+                  <span class="copy-done" data-fr="Copié" data-nl="Gekopieerd">Copié</span>
+                </span>
+              </button>
+            </div>
+
+            <!-- Scannable SEPA payment QR — desktop only (CSS), pre-fills the transfer -->
+            <div class="gift-qr-wrap" aria-hidden="true">
+              <img class="gift-qr" src="img/qr-ilot.png" alt="" width="540" height="540" loading="lazy">
+              <span class="gift-qr-caption" data-fr="Scanner avec votre application bancaire"
+                data-nl="Scan met je bankapp">Scanner avec votre application bancaire</span>
+            </div>
+
+            <!-- Secondary path: online form with tax certificate. FR/NL via data-href-*. -->
+            <a class="gift-link gift-link-online" href="https://agir.ilot.be/fr-FR/p/formulaire-ab/step-1"
+              target="_blank" rel="noopener"
+              data-href-fr="https://agir.ilot.be/fr-FR/p/formulaire-ab/step-1"
+              data-href-nl="https://agir.ilot.be/nl-NL/p/formulaire-ab/step-1"
+              data-fr="Faire un don en ligne (attestation fiscale)"
+              data-nl="Online doneren (fiscaal attest)">Faire un don en ligne (attestation fiscale)</a>
+
+          </details>
+
+          <!-- Hen perched on a fence — peeking from the bottom-right corner of the card -->
+          <div class="deco deco-chicken-fence" aria-hidden="true">
+            <picture>
+              <source srcset="img/assets/chicken-3-fence.webp" type="image/webp">
+              <img src="img/assets/chicken-3-fence.png" alt="" width="406" height="465">
+            </picture>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
     <!-- ==================== RSVP PAGE ==================== -->
     <div class="page" id="page-rsvp">
 
@@ -209,8 +336,8 @@
           <span data-fr="Ajouter un invité" data-nl="Gast toevoegen">Ajouter un invité</span>
         </button>
 
-        <p class="form-subtitle" data-fr="Adresse mail de confirmation"
-          data-nl="E-mailadres voor bevestiging">Adresse mail de confirmation</p>
+        <p class="form-subtitle" data-fr="Adresse mail de confirmation" data-nl="E-mailadres voor bevestiging">Adresse
+          mail de confirmation</p>
 
         <!-- One email for the whole RSVP — used to send a confirmation summary -->
         <div class="field-group contact-field">
@@ -292,6 +419,7 @@
   <script src="js/auth.js"></script>
   <script src="js/rsvp.js"></script>
   <script src="js/maps.js"></script>
+  <script src="js/gift.js"></script>
 
 </body>
 
